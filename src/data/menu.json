@@ -1,0 +1,430 @@
+{
+  "categories": [
+    {
+      "id": "makanan-nasi",
+      "name": "Nasi & Lauk",
+      "icon": "🍚"
+    },
+    {
+      "id": "mie-bakso",
+      "name": "Mie & Bakso",
+      "icon": "🍜"
+    },
+    {
+      "id": "cemilan",
+      "name": "Cemilan & Gorengan",
+      "icon": "🥟"
+    },
+    {
+      "id": "kopi",
+      "name": "Kopi Nusantara",
+      "icon": "☕"
+    },
+    {
+      "id": "minuman-segar",
+      "name": "Minuman Segar",
+      "icon": "🥤"
+    }
+  ],
+  "items": [
+    {
+      "id": "item-01",
+      "categoryId": "makanan-nasi",
+      "name": "Nasi Goreng Spesial Babat",
+      "description": "Nasi goreng bumbu rempah khas dengan potongan babat gurih, telur ceplok, kerupuk udang, dan acar timun.",
+      "price": 28000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Level Pedas",
+          "options": [
+            { "name": "Tidak Pedas", "priceDelta": 0 },
+            { "name": "Sedang", "priceDelta": 0 },
+            { "name": "Pedas Gila", "priceDelta": 2000 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-telur", "name": "Ekstra Telur Ceplok", "price": 4000 },
+        { "id": "add-kerupuk", "name": "Ekstra Kerupuk Udang", "price": 3000 }
+      ]
+    },
+    {
+      "id": "item-02",
+      "categoryId": "makanan-nasi",
+      "name": "Nasi Ayam Bakar Madu Pedas",
+      "description": "Ayam bakar karamel madu dengan lumuran rempah gurih, sambal terasi segar, lalapan kemangi, dan nasi hangat.",
+      "price": 32000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Bagian Ayam",
+          "options": [
+            { "name": "Paha Atas/Bawah", "priceDelta": 0 },
+            { "name": "Dada Mentok", "priceDelta": 0 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-sambal", "name": "Ekstra Sambal Terasi", "price": 3000 },
+        { "id": "add-tahu-tempe", "name": "Tahu & Tempe Goreng", "price": 5000 }
+      ]
+    },
+    {
+      "id": "item-03",
+      "categoryId": "makanan-nasi",
+      "name": "Nasi Rendang Daging Sapi",
+      "description": "Daging sapi pilihan dimasak santan dan rempah Minang selama 6 jam hingga empuk, gurih, dan meresap sempurna.",
+      "price": 35000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "variants": [],
+      "addons": [
+        { "id": "add-nasi", "name": "Nasi Putih Tambahan", "price": 5000 }
+      ]
+    },
+    {
+      "id": "item-04",
+      "categoryId": "makanan-nasi",
+      "name": "Nasi Bebek Goreng Kremes",
+      "description": "Bebek ungkep bumbu kuning gurih digoreng renyah bertabur kremesan renyah dan sambal korek bawang pedas.",
+      "price": 36000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": true,
+      "variants": [
+        {
+          "name": "Pilihan Sambal",
+          "options": [
+            { "name": "Sambal Bawang Korek", "priceDelta": 0 },
+            { "name": "Sambal Ijo Padang", "priceDelta": 0 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-kremes", "name": "Kremesan Ekstra", "price": 3000 }
+      ]
+    },
+    {
+      "id": "item-05",
+      "categoryId": "makanan-nasi",
+      "name": "Nasi Rawon Daging Surabaya",
+      "description": "Sup daging sapi khas Jawa Timur berkuah kluwek hitam pekat gurih disajikan dengan tauge pendek dan sambal terasi.",
+      "price": 34000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": false,
+      "isPopular": false,
+      "isNew": false,
+      "variants": [],
+      "addons": [
+        { "id": "add-telurasin", "name": "Telur Asin Brebes", "price": 6000 }
+      ]
+    },
+    {
+      "id": "item-06",
+      "categoryId": "mie-bakso",
+      "name": "Mie Ayam Jamur Spesial",
+      "description": "Mie kenyal buatan sendiri disajikan dengan tumisan daging ayam cincang manis gurih, jamur kancing, sawi hijau, dan kuah kaldu.",
+      "price": 22000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Bumbu Mie",
+          "options": [
+            { "name": "Asin Gurih Original", "priceDelta": 0 },
+            { "name": "Manis Yamin", "priceDelta": 0 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-pangsit", "name": "Pangsit Rebus (2 pcs)", "price": 4000 },
+        { "id": "add-bakso", "name": "Bakso Sapi Halus (2 pcs)", "price": 5000 }
+      ]
+    },
+    {
+      "id": "item-07",
+      "categoryId": "mie-bakso",
+      "name": "Bakso Malang Campur Komplit",
+      "description": "Semangkuk bakso urat, bakso halus, siomay kukus, pangsit goreng mekar, dan tahu bakso dalam kuah kaldu sapi bening gurih.",
+      "price": 26000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Pilihan Kuah",
+          "options": [
+            { "name": "Kuah Bening Gurih", "priceDelta": 0 },
+            { "name": "Kuah Pedas Taichan", "priceDelta": 2000 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-pangsit-goreng", "name": "Pangsit Goreng Renyah (2 pcs)", "price": 4000 }
+      ]
+    },
+    {
+      "id": "item-08",
+      "categoryId": "mie-bakso",
+      "name": "Mie Goreng Jawa Tradisional",
+      "description": "Mie kuning pipih dimasak dengan bumbu kemiri khas Jawa, suwiran ayam kampung, kol, tomat, dan taburan bawang merah goreng.",
+      "price": 24000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Tingkat Pedas",
+          "options": [
+            { "name": "Original (Tidak Pedas)", "priceDelta": 0 },
+            { "name": "Sedang", "priceDelta": 0 },
+            { "name": "Pedas Banget", "priceDelta": 1000 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-telur-ceplok", "name": "Telur Dadar / Ceplok", "price": 4000 }
+      ]
+    },
+    {
+      "id": "item-09",
+      "categoryId": "mie-bakso",
+      "name": "Kwetiau Sapi Siram Gurih",
+      "description": "Kwetiau beras wangi aroma wok hei disiram kuah kental telur lembut dan irisan daging sapi empuk serta pokcoy segar.",
+      "price": 30000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": true,
+      "variants": [],
+      "addons": []
+    },
+    {
+      "id": "item-10",
+      "categoryId": "mie-bakso",
+      "name": "Soto Ayam Lamongan Kuah Koya",
+      "description": "Soto ayam kampung berkuah kuning bening gurih dengan suwiran ayam, sohun, irisan kubis, telur rebus, dan serbuk koya gurih melimpah.",
+      "price": 23000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "variants": [],
+      "addons": [
+        { "id": "add-koya", "name": "Ekstra Serbuk Koya", "price": 2000 },
+        { "id": "add-nasi", "name": "Nasi Putih", "price": 5000 }
+      ]
+    },
+    {
+      "id": "item-11",
+      "categoryId": "cemilan",
+      "name": "Cireng Krispi Sambal Rujak",
+      "description": "Cireng tapioka khas Bandung yang garing renyah di luar kenyal lembut di dalam, dicocol saus rujak asam manis pedas.",
+      "price": 15000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "variants": [],
+      "addons": [
+        { "id": "add-rujak", "name": "Ekstra Bumbu Rujak", "price": 2500 }
+      ]
+    },
+    {
+      "id": "item-12",
+      "categoryId": "cemilan",
+      "name": "Pisang Goreng Keju Karamel",
+      "description": "Pisang kepok manis berbalut adonan krispi keemasan, ditaburi parutan keju cheddar melimpah dan siraman saus karamel.",
+      "price": 18000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "variants": [],
+      "addons": [
+        { "id": "add-keju", "name": "Ekstra Parutan Keju", "price": 3000 }
+      ]
+    },
+    {
+      "id": "item-13",
+      "categoryId": "cemilan",
+      "name": "Tahu Cabe Garam Krispi",
+      "description": "Tahu sutra dipotong dadu digoreng krispi lalu ditumis harum bersama bawang putih cincang gurih, daun bawang, dan irisan cabe rawit merah.",
+      "price": 16000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Level Pedas",
+          "options": [
+            { "name": "Sedang", "priceDelta": 0 },
+            { "name": "Ekstra Pedas Rawit", "priceDelta": 1000 }
+          ]
+        }
+      ],
+      "addons": []
+    },
+    {
+      "id": "item-14",
+      "categoryId": "cemilan",
+      "name": "Tempe Mendoan Banyumas",
+      "description": "Tempe mendoan tipis lebar khas Banyumas berbalut tepung bumbu daun bawang basah lembut, disajikan dengan kecap cabe rawit segar.",
+      "price": 14000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "variants": [],
+      "addons": [
+        { "id": "add-kecap-rawit", "name": "Ekstra Sambal Kecap Rawit", "price": 2000 }
+      ]
+    },
+    {
+      "id": "item-15",
+      "categoryId": "cemilan",
+      "name": "Singkong Keju Merekah Gurih",
+      "description": "Singkong pulen yang direbus bumbu rempah lalu digoreng hingga merekah empuk, gurih, dan bertabur bubuk keju asin lezat.",
+      "price": 15000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": true,
+      "variants": [],
+      "addons": []
+    },
+    {
+      "id": "item-16",
+      "categoryId": "kopi",
+      "name": "Es Kopi Susu Gula Aren",
+      "description": "Double espresso arabika-robusta dipadukan dengan susu sapi murni creamy dan sirup gula aren asli organik.",
+      "price": 18000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Suhu Penyajian",
+          "options": [
+            { "name": "Dingin (Es)", "priceDelta": 0 },
+            { "name": "Hangat (Hot)", "priceDelta": 0 }
+          ]
+        },
+        {
+          "name": "Tingkat Manis",
+          "options": [
+            { "name": "Normal (100%)", "priceDelta": 0 },
+            { "name": "Less Sweet (50%)", "priceDelta": 0 },
+            { "name": "Tanpa Gula (0%)", "priceDelta": 0 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-shot", "name": "Extra Espresso Shot", "price": 4000 },
+        { "id": "add-jelly", "name": "Coffee Jelly Topping", "price": 3000 }
+      ]
+    },
+    {
+      "id": "item-17",
+      "categoryId": "kopi",
+      "name": "Manual Brew V60 Flores Bajawa",
+      "description": "Kopi single origin Flores Bajawa diseduh manual dengan dripper V60, menghasilkan karakter aroma floral, citrus lembut, dan aftertaste cokelat manis.",
+      "price": 24000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Suhu Penyajian",
+          "options": [
+            { "name": "Hangat (Hot)", "priceDelta": 0 },
+            { "name": "Japanese Iced", "priceDelta": 2000 }
+          ]
+        }
+      ],
+      "addons": []
+    },
+    {
+      "id": "item-18",
+      "categoryId": "kopi",
+      "name": "Kopi Tubruk Robusta Dampit",
+      "description": "Seduhan kopi tubruk tradisional biji robusta Dampit Malang dengan aroma pekat tebal dan rasa cokelat karamel khas.",
+      "price": 12000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Gula",
+          "options": [
+            { "name": "Manis Sedang", "priceDelta": 0 },
+            { "name": "Kopi Pahit (Tanpa Gula)", "priceDelta": 0 }
+          ]
+        }
+      ],
+      "addons": []
+    },
+    {
+      "id": "item-19",
+      "categoryId": "minuman-segar",
+      "name": "Es Teh Manis Melati Solo",
+      "description": "Seduhan teh tubruk wangi melati racikan Solo tempo dulu yang kental, wangi sepet manis segar meredakan dahaga.",
+      "price": 8000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Ukuran Gelas",
+          "options": [
+            { "name": "Ukuran Reguler", "priceDelta": 0 },
+            { "name": "Ukuran Jumbo (500ml)", "priceDelta": 3000 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-lemon", "name": "Perasan Lemon Asli", "price": 2000 }
+      ]
+    },
+    {
+      "id": "item-20",
+      "categoryId": "minuman-segar",
+      "name": "Es Jeruk Peras Murni",
+      "description": "Perasan buah jeruk segar lokal asli dipadukan dengan sedikit gula tebu dan es batu dingin menyegarkan.",
+      "price": 13000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "variants": [
+        {
+          "name": "Penyajian",
+          "options": [
+            { "name": "Dingin dengan Es", "priceDelta": 0 },
+            { "name": "Hangat", "priceDelta": 0 }
+          ]
+        }
+      ],
+      "addons": []
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-primary: #f59e0b;
+    --color-primary-hover: #d97706;
+    --color-primary-light: rgba(245, 158, 11, 0.12);
+    --color-primary-text: #ffffff;
+    --color-secondary: #0f172a;
+    --color-bg-page: #f8fafc;
+    --color-bg-card: #ffffff;
+    --color-text-main: #0f172a;
+    --color-text-muted: #64748b;
+    --color-border: #e2e8f0;
+    --radius-theme: 1rem;
+    --font-theme: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background-color: var(--color-bg-page);
+    color: var(--color-text-main);
+    font-family: var(--font-theme);
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+}
+
+/* Utilitas Tema Berbasis CSS Variables */
+.bg-theme-page {
+  background-color: var(--color-bg-page);
+}
+
+.bg-theme-card {
+  background-color: var(--color-bg-card);
+}
+
+.bg-theme-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-theme-primary-light {
+  background-color: var(--color-primary-light);
+}
+
+.text-theme-primary {
+  color: var(--color-primary);
+}
+
+.text-theme-primary-contrast {
+  color: var(--color-primary-text);
+}
+
+.text-theme-main {
+  color: var(--color-text-main);
+}
+
+.text-theme-muted {
+  color: var(--color-text-muted);
+}
+
+.border-theme {
+  border-color: var(--color-border);
+}
+
+.rounded-theme {
+  border-radius: var(--radius-theme);
+}

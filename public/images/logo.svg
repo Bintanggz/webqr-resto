@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="40" fill="url(#grad)" />
+  <!-- Coffee Cup & Fork/Spoon Motif -->
+  <path d="M60 135 C60 150, 75 160, 100 160 C125 160, 140 150, 140 135 L140 85 L60 85 Z" fill="#ffffff" />
+  <path d="M140 95 C155 95, 165 105, 165 115 C165 125, 155 135, 140 135" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round" />
+  <path d="M85 70 C85 60, 95 55, 95 45" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+  <path d="M115 70 C115 60, 105 55, 105 45" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+</svg>
