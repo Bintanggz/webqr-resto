@@ -106,11 +106,26 @@ export const siteConfig: SiteConfig = {
     // Aktifkan tombol beralih ke mode gelap (dark mode)
     darkMode: false,
 
+    // Mode hanya lihat menu (katalog): tanpa tombol keranjang & tanpa checkout WhatsApp
+    viewOnlyMode: false,
+
     // Izinkan pelanggan menulis catatan khusus per item (misal: "tanpa seledri")
     itemNotes: true,
 
     // Tampilkan lencana bintang/favorit pada menu yang sedang populer
     popularBadge: true,
+
+    // Aktifkan tombol ganti bahasa (Bahasa Indonesia / English)
+    multiLanguage: true,
+
+    // Aktifkan baris filter cepat (Terlaris, Baru, Pedas, Vegetarian)
+    quickFilter: true,
+
+    // Aktifkan tombol Bagikan Menu (Web Share API / Salin Tautan)
+    shareMenu: true,
+
+    // Aktifkan tombol Hubungi Kasir langsung via WhatsApp
+    contactWhatsApp: true,
   },
 
   // ----------------------------------------------------------------------------

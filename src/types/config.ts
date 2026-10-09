@@ -50,12 +50,17 @@ export interface SiteConfig {
   // Fitur On/Off
   features: {
     cart: boolean;
+    viewOnlyMode: boolean; // Mode katalog hanya lihat menu (tanpa keranjang & tombol pesan)
     search: boolean;
     tableNumber: boolean;
     promoBanner: boolean;
     darkMode: boolean;
     itemNotes: boolean;
     popularBadge: boolean;
+    multiLanguage: boolean; // Multi-bahasa ID/EN dengan tombol ganti bahasa
+    quickFilter: boolean; // Filter cepat (Terlaris, Baru, Vegetarian, Pedas)
+    shareMenu: boolean; // Tombol Bagikan Menu (Web Share API)
+    contactWhatsApp: boolean; // Tombol Hubungi Kasir via WhatsApp
   };
 
   // Pilihan Tipe Pemesanan (Makan di Tempat, Bawa Pulang, Antar)

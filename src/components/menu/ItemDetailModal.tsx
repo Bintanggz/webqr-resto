@@ -17,6 +17,8 @@ interface ItemDetailModalProps {
     notes: string,
     calculatedUnitPrice: number
   ) => void;
+  isViewOnly?: boolean;
+  t?: (key: any, vars?: any) => string;
 }
 
 export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
@@ -24,6 +26,8 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   isOpen,
   onClose,
   onAddToCart,
+  isViewOnly = false,
+  t,
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
@@ -300,7 +304,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
           )}
         </div>
 
-        {/* Footer Bar: Counter & Tombol Tambah Pesanan (Sticky di bawah) */}
+        {/* Footer Bar: Counter & Tombol Tambah Pesanan / Mode Lihat Saja */}
         <div
           style={{
             borderColor: 'var(--color-border)',
@@ -308,56 +312,83 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
           }}
           className="p-4 border-t flex items-center gap-3"
         >
-          {/* Tombol Kuantitas (- / +) dengan Area Sentuh 44px */}
-          <div
-            style={{
-              borderColor: 'var(--color-border)',
-              backgroundColor: 'var(--color-bg-page)',
-              borderRadius: 'var(--radius-theme)',
-            }}
-            className="flex items-center border shadow-2xs"
-          >
-            <button
-              type="button"
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              disabled={quantity <= 1}
-              aria-label="Kurangi jumlah"
-              style={{ color: 'var(--color-text-main)' }}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-30 active:scale-95 transition-all"
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <span
-              style={{ color: 'var(--color-text-main)' }}
-              className="w-8 text-center font-bold text-sm select-none"
-            >
-              {quantity}
-            </span>
-            <button
-              type="button"
-              onClick={() => setQuantity((q) => q + 1)}
-              aria-label="Tambah jumlah"
-              style={{ color: 'var(--color-text-main)' }}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center active:scale-95 transition-all"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
+          {isViewOnly ? (
+            <div className="w-full flex items-center justify-between gap-3">
+              <div>
+                <p style={{ color: 'var(--color-text-muted)' }} className="text-xs">
+                  {t ? t('modal_view_only_note') : 'Mode Katalog Menu (Pemesanan di kasir / pelayan)'}
+                </p>
+                <p style={{ color: 'var(--color-primary)' }} className="text-sm font-bold">
+                  {formatRupiah(unitPrice)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                style={{
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'var(--color-primary-text)',
+                  borderRadius: 'var(--radius-theme)',
+                }}
+                className="min-h-[44px] px-6 py-2.5 font-bold text-xs sm:text-sm active:scale-95 transition-all shadow-xs"
+              >
+                {t ? t('modal_close') : 'Tutup'}
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Tombol Kuantitas (- / +) dengan Area Sentuh 44px */}
+              <div
+                style={{
+                  borderColor: 'var(--color-border)',
+                  backgroundColor: 'var(--color-bg-page)',
+                  borderRadius: 'var(--radius-theme)',
+                }}
+                className="flex items-center border shadow-2xs"
+              >
+                <button
+                  type="button"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  disabled={quantity <= 1}
+                  aria-label="Kurangi jumlah"
+                  style={{ color: 'var(--color-text-main)' }}
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-30 active:scale-95 transition-all"
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span
+                  style={{ color: 'var(--color-text-main)' }}
+                  className="w-8 text-center font-bold text-sm select-none"
+                >
+                  {quantity}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setQuantity((q) => q + 1)}
+                  aria-label="Tambah jumlah"
+                  style={{ color: 'var(--color-text-main)' }}
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center active:scale-95 transition-all"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
 
-          {/* Tombol Tambah ke Keranjang */}
-          <button
-            type="button"
-            onClick={handleSubmit}
-            style={{
-              backgroundColor: 'var(--color-primary)',
-              color: 'var(--color-primary-text)',
-              borderRadius: 'var(--radius-theme)',
-            }}
-            className="flex-1 min-h-[48px] active:scale-[0.98] font-bold text-xs sm:text-sm px-4 py-3 flex items-center justify-between shadow-md transition-opacity hover:opacity-90"
-          >
-            <span>Tambah ke Keranjang</span>
-            <span>{formatRupiah(totalPrice)}</span>
-          </button>
+              {/* Tombol Tambah ke Keranjang */}
+              <button
+                type="button"
+                onClick={handleSubmit}
+                style={{
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'var(--color-primary-text)',
+                  borderRadius: 'var(--radius-theme)',
+                }}
+                className="flex-1 min-h-[48px] active:scale-[0.98] font-bold text-xs sm:text-sm px-4 py-3 flex items-center justify-between shadow-md transition-opacity hover:opacity-90"
+              >
+                <span>{t ? t('modal_add_to_cart') : 'Tambah ke Keranjang'}</span>
+                <span>{formatRupiah(totalPrice)}</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

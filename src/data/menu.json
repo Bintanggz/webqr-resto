@@ -37,6 +37,7 @@
       "isAvailable": true,
       "isPopular": true,
       "isNew": false,
+      "tags": ["pedas"],
       "variants": [
         {
           "name": "Level Pedas",
@@ -62,6 +63,7 @@
       "isAvailable": true,
       "isPopular": true,
       "isNew": false,
+      "tags": ["pedas"],
       "variants": [
         {
           "name": "Bagian Ayam",
@@ -86,6 +88,7 @@
       "isAvailable": true,
       "isPopular": true,
       "isNew": false,
+      "tags": ["pedas"],
       "variants": [],
       "addons": [
         { "id": "add-nasi", "name": "Nasi Putih Tambahan", "price": 5000 }
@@ -101,6 +104,7 @@
       "isAvailable": true,
       "isPopular": false,
       "isNew": true,
+      "tags": ["pedas"],
       "variants": [
         {
           "name": "Pilihan Sambal",
@@ -124,6 +128,7 @@
       "isAvailable": false,
       "isPopular": false,
       "isNew": false,
+      "tags": [],
       "variants": [],
       "addons": [
         { "id": "add-telurasin", "name": "Telur Asin Brebes", "price": 6000 }
@@ -139,6 +144,7 @@
       "isAvailable": true,
       "isPopular": true,
       "isNew": false,
+      "tags": [],
       "variants": [
         {
           "name": "Bumbu Mie",
@@ -163,6 +169,7 @@
       "isAvailable": true,
       "isPopular": true,
       "isNew": false,
+      "tags": [],
       "variants": [
         {
           "name": "Pilihan Kuah",
@@ -186,6 +193,7 @@
       "isAvailable": true,
       "isPopular": false,
       "isNew": false,
+      "tags": ["pedas"],
       "variants": [
         {
           "name": "Tingkat Pedas",
@@ -210,6 +218,7 @@
       "isAvailable": true,
       "isPopular": false,
       "isNew": true,
+      "tags": [],
       "variants": [],
       "addons": []
     },
@@ -223,6 +232,7 @@
       "isAvailable": true,
       "isPopular": false,
       "isNew": false,
+      "tags": [],
       "variants": [],
       "addons": [
         { "id": "add-koya", "name": "Ekstra Serbuk Koya", "price": 2000 },
@@ -239,6 +249,7 @@
       "isAvailable": true,
       "isPopular": true,
       "isNew": false,
+      "tags": ["vegetarian", "pedas"],
       "variants": [],
       "addons": [
         { "id": "add-rujak", "name": "Ekstra Bumbu Rujak", "price": 2500 }
@@ -254,6 +265,7 @@
       "isAvailable": true,
       "isPopular": true,
       "isNew": false,
+      "tags": ["vegetarian"],
       "variants": [],
       "addons": [
         { "id": "add-keju", "name": "Ekstra Parutan Keju", "price": 3000 }
@@ -269,6 +281,7 @@
       "isAvailable": true,
       "isPopular": false,
       "isNew": false,
+      "tags": ["vegetarian", "pedas"],
       "variants": [
         {
           "name": "Level Pedas",
@@ -290,6 +303,7 @@
       "isAvailable": true,
       "isPopular": true,
       "isNew": false,
+      "tags": ["vegetarian", "pedas"],
       "variants": [],
       "addons": [
         { "id": "add-kecap-rawit", "name": "Ekstra Sambal Kecap Rawit", "price": 2000 }
@@ -305,6 +319,7 @@
       "isAvailable": true,
       "isPopular": false,
       "isNew": true,
+      "tags": ["vegetarian"],
       "variants": [],
       "addons": []
     },
@@ -318,6 +333,7 @@
       "isAvailable": true,
       "isPopular": true,
       "isNew": false,
+      "tags": ["vegetarian"],
       "variants": [
         {
           "name": "Suhu Penyajian",
@@ -350,6 +366,7 @@
       "isAvailable": true,
       "isPopular": false,
       "isNew": false,
+      "tags": ["vegetarian"],
       "variants": [
         {
           "name": "Suhu Penyajian",
@@ -371,6 +388,7 @@
       "isAvailable": true,
       "isPopular": false,
       "isNew": false,
+      "tags": ["vegetarian"],
       "variants": [
         {
           "name": "Gula",
@@ -392,6 +410,7 @@
       "isAvailable": true,
       "isPopular": true,
       "isNew": false,
+      "tags": ["vegetarian"],
       "variants": [
         {
           "name": "Ukuran Gelas",
@@ -415,6 +434,7 @@
       "isAvailable": true,
       "isPopular": false,
       "isNew": false,
+      "tags": ["vegetarian"],
       "variants": [
         {
           "name": "Penyajian",

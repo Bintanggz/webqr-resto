@@ -2,25 +2,55 @@ import { useState, useMemo } from 'react';
 import { siteConfig } from './config/site.config';
 import menuData from './data/menu.json';
 import { Header } from './components/layout/Header';
+import { TopActionBar } from './components/layout/TopActionBar';
 import { PromoCarousel } from './components/promo/PromoCarousel';
 import { SearchBar } from './components/menu/SearchBar';
+import { QuickFilters } from './components/menu/QuickFilters';
 import { CategoryTabs } from './components/layout/CategoryTabs';
 import { MenuCard } from './components/menu/MenuCard';
 import { ItemDetailModal } from './components/menu/ItemDetailModal';
 import { CartFloatingBar } from './components/cart/CartFloatingBar';
 import { CartDrawer } from './components/cart/CartDrawer';
+import { Footer } from './components/layout/Footer';
 import { ConfigErrorAlert } from './components/common/ConfigErrorAlert';
+import { SearchEmptyState } from './components/common/SearchEmptyState';
+import { NotFoundPage } from './components/common/NotFoundPage';
+import { QrGeneratorPage } from './components/qr/QrGeneratorPage';
 import { useCart } from './hooks/useCart';
 import { useMenuSearch } from './hooks/useMenuSearch';
 import { useTableNumber } from './hooks/useTableNumber';
 import { useScrollSpy } from './hooks/useScrollSpy';
 import { useTheme } from './hooks/useTheme';
+import { useLanguage } from './hooks/useLanguage';
 import { validateSiteConfig, validateMenuData } from './utils/validation';
 import type { MenuItem } from './types/menu';
 
 export function App() {
   // Inisialisasi tema, preset, dan pendeteksi dark mode otomatis
   useTheme();
+
+  // Multi-bahasa ringan (ID / EN)
+  const { lang, setLang, t } = useLanguage();
+
+  // Deteksi rute halaman /qr atau query ?page=qr
+  const checkIsQr = () => {
+    if (typeof window === 'undefined') return false;
+    const path = window.location.pathname.toLowerCase();
+    const search = new URLSearchParams(window.location.search);
+    return path === '/qr' || path === '/qr/' || search.get('page') === 'qr';
+  };
+
+  const [isQrPage, setIsQrPage] = useState(checkIsQr);
+
+  // State untuk deteksi halaman 404 (jika user membuka path URL non-root dan bukan /qr)
+  const [isNotFound, setIsNotFound] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const path = window.location.pathname.toLowerCase();
+    if (path === '/' || path === '' || path === '/qr' || path === '/qr/' || path.endsWith('index.html')) {
+      return false;
+    }
+    return true;
+  });
 
   const [tableNumber, , isTableLocked] = useTableNumber();
   const {
@@ -34,10 +64,12 @@ export function App() {
     totalHarga,
   } = useCart();
 
-  // Search state
+  // Search & Quick Filter state
   const {
     query,
     setQuery,
+    activeQuickFilter,
+    setActiveQuickFilter,
     filteredItems,
   } = useMenuSearch(menuData.items as MenuItem[]);
 
@@ -47,6 +79,9 @@ export function App() {
 
   // Drawer Keranjang Belanja State
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+
+  // Status Mode "Hanya Lihat Menu" (Tanpa keranjang)
+  const isViewOnly = Boolean(siteConfig.features.viewOnlyMode || !siteConfig.features.cart);
 
   // Kategori IDs untuk Scroll-Spy
   const categoryIds = useMemo(
@@ -85,6 +120,7 @@ export function App() {
     notes: string,
     calculatedUnitPrice: number
   ) => {
+    if (isViewOnly) return;
     addItem(
       item,
       quantity,
@@ -111,7 +147,36 @@ export function App() {
     }
   };
 
-  const isSearching = Boolean(query.trim());
+  const isFiltering = Boolean(query.trim() || activeQuickFilter !== 'all');
+
+  // Jika membuka rute /qr, tampilkan halaman Generator QR Meja Siap Cetak
+  if (isQrPage) {
+    return (
+      <QrGeneratorPage
+        onBackToMenu={() => {
+          if (typeof window !== 'undefined') {
+            window.history.pushState({}, '', '/');
+          }
+          setIsQrPage(false);
+        }}
+      />
+    );
+  }
+
+  // Jika membuka path yang tidak ada, tampilkan halaman 404
+  if (isNotFound) {
+    return (
+      <NotFoundPage
+        t={t}
+        onBackHome={() => {
+          if (typeof window !== 'undefined') {
+            window.history.pushState({}, '', '/');
+          }
+          setIsNotFound(false);
+        }}
+      />
+    );
+  }
 
   return (
     <div
@@ -128,10 +193,38 @@ export function App() {
           backgroundColor: 'var(--color-bg-card)',
           borderColor: 'var(--color-border)',
         }}
-        className="w-full max-w-lg min-h-screen shadow-2xl flex flex-col relative pb-28 border-x transition-colors duration-200"
+        className={`w-full max-w-lg min-h-screen shadow-2xl flex flex-col relative ${
+          !isViewOnly && siteConfig.features.cart ? 'pb-28' : 'pb-12'
+        } border-x transition-colors duration-200`}
       >
+        {/* Top Action Bar: Ganti Bahasa, Bagikan Menu, Hubungi WhatsApp */}
+        {(siteConfig.features.multiLanguage ||
+          siteConfig.features.shareMenu ||
+          siteConfig.features.contactWhatsApp) && (
+          <TopActionBar
+            currentLang={lang}
+            onToggleLang={setLang}
+            t={t}
+          />
+        )}
+
         {/* 1. Header Usaha (Logo, Banner, Info, Status Buka/Tutup) */}
         <Header nomorMeja={tableNumber} />
+
+        {/* Banner Mode Hanya Lihat Menu (Jika Aktif) */}
+        {siteConfig.features.viewOnlyMode && (
+          <div
+            style={{
+              backgroundColor: 'var(--color-primary-light)',
+              borderColor: 'var(--color-border)',
+              color: 'var(--color-primary)',
+            }}
+            className="px-4 py-2 border-y text-xs font-semibold flex items-center justify-between"
+          >
+            <span>{t('viewOnlyBadge')}</span>
+            <span className="text-[11px] opacity-80">{t('viewOnlyNote')}</span>
+          </div>
+        )}
 
         {/* Peringatan Format JSON Jika Ada Error */}
         <ConfigErrorAlert errors={allErrors} warnings={allWarnings} />
@@ -146,66 +239,69 @@ export function App() {
           <SearchBar
             value={query}
             onChange={setQuery}
-            placeholder="Cari nasi goreng, mie ayam, kopi..."
-            totalResults={isSearching ? filteredItems.length : undefined}
+            placeholder={t('searchPlaceholder')}
+            totalResults={isFiltering ? filteredItems.length : undefined}
+          />
+        )}
+
+        {/* Filter Cepat (Terlaris, Baru, Pedas, Vegetarian, dll) */}
+        {siteConfig.features.quickFilter && (
+          <QuickFilters
+            activeFilter={activeQuickFilter}
+            onSelectFilter={setActiveQuickFilter}
+            t={t}
           />
         )}
 
         {/* 4. Tab Kategori Sticky dengan Scroll-Spy */}
         <CategoryTabs
           categories={menuData.categories}
-          activeCategoryId={isSearching ? 'all' : activeSpyId}
+          activeCategoryId={isFiltering ? 'all' : activeSpyId}
           onSelectCategory={handleSelectCategory}
           totalAllItems={menuData.items.length}
         />
 
         {/* 5. Daftar Item Menu */}
         <main className="px-4 py-2 flex-1">
-          {/* Tampilan Jika Sedang Mencari Menu */}
-          {isSearching ? (
+          {/* Tampilan Jika Sedang Mencari Menu atau Menggunakan Filter */}
+          {isFiltering ? (
             <section className="pt-2">
               <div className="flex items-center justify-between mb-3">
                 <h2
                   style={{ color: 'var(--color-text-main)' }}
                   className="text-sm font-bold"
                 >
-                  Hasil Pencarian Menu
+                  {t('searchPlaceholder')}
                 </h2>
                 <span
                   style={{ color: 'var(--color-text-muted)' }}
                   className="text-xs"
                 >
-                  {filteredItems.length} menu ditemukan
+                  {t('menuCount', { count: filteredItems.length })}
                 </span>
               </div>
 
-              <div className="space-y-3">
-                {filteredItems.map((item) => (
-                  <MenuCard
-                    key={item.id}
-                    item={item}
-                    onSelect={handleSelectItem}
-                  />
-                ))}
-
-                {filteredItems.length === 0 && (
-                  <div className="text-center py-16">
-                    <p className="text-3xl mb-2">🔍</p>
-                    <p
-                      style={{ color: 'var(--color-text-main)' }}
-                      className="text-sm font-bold"
-                    >
-                      Menu tidak ditemukan
-                    </p>
-                    <p
-                      style={{ color: 'var(--color-text-muted)' }}
-                      className="text-xs mt-1"
-                    >
-                      Coba gunakan kata kunci lain seperti &ldquo;nasi&rdquo;, &ldquo;kopi&rdquo;, atau &ldquo;ayam&rdquo;.
-                    </p>
-                  </div>
-                )}
-              </div>
+              {filteredItems.length > 0 ? (
+                <div className="space-y-3">
+                  {filteredItems.map((item) => (
+                    <MenuCard
+                      key={item.id}
+                      item={item}
+                      onSelect={handleSelectItem}
+                      isViewOnly={isViewOnly}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <SearchEmptyState
+                  query={query || (activeQuickFilter !== 'all' ? activeQuickFilter : undefined)}
+                  onReset={() => {
+                    setQuery('');
+                    setActiveQuickFilter('all');
+                  }}
+                  t={t}
+                />
+              )}
             </section>
           ) : (
             /* Tampilan Normal: Dikelompokkan Per Kategori dengan Scroll-Margin */
@@ -248,7 +344,7 @@ export function App() {
                         }}
                         className="text-[11px] font-bold px-2 py-0.5"
                       >
-                        {categoryItems.length} menu
+                        {t('menuCount', { count: categoryItems.length })}
                       </span>
                     </div>
 
@@ -259,6 +355,7 @@ export function App() {
                           key={item.id}
                           item={item}
                           onSelect={handleSelectItem}
+                          isViewOnly={isViewOnly}
                         />
                       ))}
                     </div>
@@ -269,40 +366,29 @@ export function App() {
           )}
         </main>
 
-        {/* Footer Usaha */}
-        <footer
-          style={{
-            borderColor: 'var(--color-border)',
-            backgroundColor: 'var(--color-bg-page)',
-            color: 'var(--color-text-muted)',
+        {/* 6. Footer Usaha Lengkap dengan Jam Buka, Maps, & Instagram */}
+        <Footer
+          t={t}
+          onOpenQr={() => {
+            if (typeof window !== 'undefined') {
+              window.history.pushState({}, '', '/qr');
+            }
+            setIsQrPage(true);
           }}
-          className="mt-8 px-4 py-6 text-center border-t text-xs"
-        >
-          <p
-            style={{ color: 'var(--color-text-main)' }}
-            className="font-bold"
-          >
-            {siteConfig.restaurant.name}
-          </p>
-          <p className="mt-0.5">{siteConfig.restaurant.address}</p>
-          <p className="mt-2 text-[11px] opacity-80">
-            Jam Buka: {siteConfig.restaurant.openingHours}
-          </p>
-          <p className="mt-3 text-[10px] opacity-60 font-medium">
-            Menu Digital QR • Dipersembahkan untuk UMKM Kuliner Indonesia
-          </p>
-        </footer>
+        />
 
-        {/* 6. Modal / Bottom-Sheet Detail Item Saat Diklik */}
+        {/* 7. Modal / Bottom-Sheet Detail Item Saat Diklik */}
         <ItemDetailModal
           item={activeItem}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onAddToCart={handleAddToCart}
+          isViewOnly={isViewOnly}
+          t={t}
         />
 
-        {/* 7. Floating Bar Ringkasan Pesanan (Jika fitur cart aktif) */}
-        {siteConfig.features.cart && (
+        {/* 8. Floating Bar Ringkasan Pesanan (Hanya tampil jika fitur cart aktif dan bukan viewOnlyMode) */}
+        {!isViewOnly && siteConfig.features.cart && (
           <CartFloatingBar
             totalItems={totalItems}
             totalHarga={totalHarga}
@@ -310,20 +396,22 @@ export function App() {
           />
         )}
 
-        {/* 8. Drawer / Bottom-Sheet Keranjang & Checkout WhatsApp */}
-        <CartDrawer
-          isOpen={isCartDrawerOpen}
-          onClose={() => setIsCartDrawerOpen(false)}
-          items={cartItems}
-          totalItems={totalItems}
-          totalHarga={totalHarga}
-          onUpdateQuantity={updateQuantity}
-          onUpdateNotes={updateNotes}
-          onRemoveItem={removeItem}
-          onClearCart={clearCart}
-          initialTableNumber={tableNumber}
-          isTableLocked={isTableLocked}
-        />
+        {/* 9. Drawer / Bottom-Sheet Keranjang & Checkout WhatsApp */}
+        {!isViewOnly && siteConfig.features.cart && (
+          <CartDrawer
+            isOpen={isCartDrawerOpen}
+            onClose={() => setIsCartDrawerOpen(false)}
+            items={cartItems}
+            totalItems={totalItems}
+            totalHarga={totalHarga}
+            onUpdateQuantity={updateQuantity}
+            onUpdateNotes={updateNotes}
+            onRemoveItem={removeItem}
+            onClearCart={clearCart}
+            initialTableNumber={tableNumber}
+            isTableLocked={isTableLocked}
+          />
+        )}
       </div>
     </div>
   );

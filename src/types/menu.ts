@@ -28,6 +28,7 @@ export interface MenuItem {
   isAvailable: boolean;
   isPopular: boolean;
   isNew: boolean;
+  tags?: string[]; // Contoh: ["pedas", "vegetarian"]
   variants?: MenuVariant[];
   addons?: MenuAddon[];
 }

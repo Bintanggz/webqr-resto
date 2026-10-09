@@ -4,14 +4,19 @@ import { PriceTag } from '../common/PriceTag';
 import { Badge } from '../common/Badge';
 import { LazyImage } from '../common/LazyImage';
 import { siteConfig } from '../../config/site.config';
-import { Plus } from 'lucide-react';
+import { Plus, ChevronRight } from 'lucide-react';
 
 interface MenuCardProps {
   item: MenuItem;
   onSelect: (item: MenuItem) => void;
+  isViewOnly?: boolean;
 }
 
-export const MenuCard: React.FC<MenuCardProps> = ({ item, onSelect }) => {
+export const MenuCard: React.FC<MenuCardProps> = ({
+  item,
+  onSelect,
+  isViewOnly = false,
+}) => {
   const showPopular = siteConfig.features.popularBadge && item.isPopular;
   const isAvailable = item.isAvailable;
 
@@ -67,6 +72,16 @@ export const MenuCard: React.FC<MenuCardProps> = ({ item, onSelect }) => {
             {item.isNew && isAvailable && (
               <Badge text="✨ Baru" variant="primary" />
             )}
+            {item.tags?.includes('pedas') && isAvailable && (
+              <span className="text-[10px] font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/50 px-1.5 py-0.5 rounded">
+                🌶️
+              </span>
+            )}
+            {item.tags?.includes('vegetarian') && isAvailable && (
+              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 px-1.5 py-0.5 rounded">
+                🥗
+              </span>
+            )}
           </div>
 
           {/* Deskripsi Singkat */}
@@ -82,30 +97,44 @@ export const MenuCard: React.FC<MenuCardProps> = ({ item, onSelect }) => {
         <div className="mt-2.5 flex items-center justify-between gap-2">
           <PriceTag harga={item.price} />
 
-          {/* Tombol Tambah dengan Area Sentuh Minimal 44px */}
+          {/* Tombol Tambah Pesan atau Tombol Mode Lihat */}
           {isAvailable ? (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect(item);
-              }}
-              aria-label={`Pilih ${item.name}`}
-              className="min-h-[44px] min-w-[44px] -m-1.5 flex items-center justify-center active:scale-90 transition-transform"
-            >
-              <span
+            isViewOnly ? (
+              <div
                 style={{
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'var(--color-primary-text)',
                   borderRadius: 'calc(var(--radius-theme) * 0.75)',
+                  backgroundColor: 'var(--color-primary-light)',
+                  color: 'var(--color-primary)',
                 }}
-                className="w-9 h-9 flex items-center justify-center shadow-md transition-opacity hover:opacity-90"
+                className="min-h-[44px] px-3 flex items-center gap-1 text-[11px] font-bold active:scale-95 transition-transform"
               >
-                <Plus className="w-5 h-5 stroke-[2.5]" />
-              </span>
-            </button>
+                <span>Detail</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect(item);
+                }}
+                aria-label={`Pilih ${item.name}`}
+                className="min-h-[44px] min-w-[44px] -m-1.5 flex items-center justify-center active:scale-90 transition-transform"
+              >
+                <span
+                  style={{
+                    backgroundColor: 'var(--color-primary)',
+                    color: 'var(--color-primary-text)',
+                    borderRadius: 'calc(var(--radius-theme) * 0.75)',
+                  }}
+                  className="w-9 h-9 flex items-center justify-center shadow-md transition-opacity hover:opacity-90"
+                >
+                  <Plus className="w-5 h-5 stroke-[2.5]" />
+                </span>
+              </button>
+            )
           ) : (
-            <span className="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg">
+            <span className="text-[11px] font-semibold text-rose-600 bg-rose-50 dark:bg-rose-950/50 px-2.5 py-1 rounded-lg">
               Stok Habis
             </span>
           )}
