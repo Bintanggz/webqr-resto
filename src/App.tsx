@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, lazy, Suspense } from 'react';
 import { siteConfig } from './config/site.config';
 import menuData from './data/menu.json';
 import { Header } from './components/layout/Header';
@@ -15,19 +15,27 @@ import { Footer } from './components/layout/Footer';
 import { ConfigErrorAlert } from './components/common/ConfigErrorAlert';
 import { SearchEmptyState } from './components/common/SearchEmptyState';
 import { NotFoundPage } from './components/common/NotFoundPage';
-import { QrGeneratorPage } from './components/qr/QrGeneratorPage';
 import { useCart } from './hooks/useCart';
 import { useMenuSearch } from './hooks/useMenuSearch';
 import { useTableNumber } from './hooks/useTableNumber';
 import { useScrollSpy } from './hooks/useScrollSpy';
 import { useTheme } from './hooks/useTheme';
 import { useLanguage } from './hooks/useLanguage';
+import { useSeo } from './hooks/useSeo';
 import { validateSiteConfig, validateMenuData } from './utils/validation';
 import type { MenuItem } from './types/menu';
+
+// Code splitting: Generator QR di-load hanya saat rute /qr dibuka
+const QrGeneratorPage = lazy(() =>
+  import('./components/qr/QrGeneratorPage').then((m) => ({ default: m.QrGeneratorPage }))
+);
 
 export function App() {
   // Inisialisasi tema, preset, dan pendeteksi dark mode otomatis
   useTheme();
+
+  // Sinkronisasi Meta Tags SEO & Open Graph (WhatsApp, Google, Twitter)
+  useSeo();
 
   // Multi-bahasa ringan (ID / EN)
   const { lang, setLang, t } = useLanguage();
@@ -152,14 +160,25 @@ export function App() {
   // Jika membuka rute /qr, tampilkan halaman Generator QR Meja Siap Cetak
   if (isQrPage) {
     return (
-      <QrGeneratorPage
-        onBackToMenu={() => {
-          if (typeof window !== 'undefined') {
-            window.history.pushState({}, '', '/');
-          }
-          setIsQrPage(false);
-        }}
-      />
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center p-6 text-center text-sm font-bold text-slate-600 bg-slate-50">
+            <div className="animate-pulse flex flex-col items-center gap-2">
+              <span className="text-3xl">🖨️</span>
+              <span>Memuat Generator QR Meja...</span>
+            </div>
+          </div>
+        }
+      >
+        <QrGeneratorPage
+          onBackToMenu={() => {
+            if (typeof window !== 'undefined') {
+              window.history.pushState({}, '', '/');
+            }
+            setIsQrPage(false);
+          }}
+        />
+      </Suspense>
     );
   }
 

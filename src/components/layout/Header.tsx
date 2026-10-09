@@ -24,8 +24,11 @@ export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
         <img
           src={restaurant.banner}
           alt={restaurant.name}
+          width={480}
+          height={160}
           className="w-full h-full object-cover opacity-90"
           loading="eager"
+          decoding="async"
         />
         {/* Label nomor meja jika fitur aktif & ada nomor meja */}
         {features.tableNumber && nomorMeja && (
@@ -53,9 +56,12 @@ export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
           >
             <img
               src={restaurant.logo}
-              alt="Logo"
+              alt={`Logo ${restaurant.name}`}
+              width={64}
+              height={64}
               style={{ borderRadius: 'calc(var(--radius-theme) * 0.75)' }}
               className="w-full h-full object-cover"
+              decoding="async"
             />
           </div>
 

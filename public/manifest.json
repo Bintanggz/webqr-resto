@@ -1,0 +1,24 @@
+{
+  "name": "Warung Kopi Senja & Rasa - Menu Digital QR",
+  "short_name": "Kopi Senja",
+  "description": "Menu digital interaktif untuk pesan makanan & minuman langsung via WhatsApp",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#d97706",
+  "icons": [
+    {
+      "src": "/images/logo.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

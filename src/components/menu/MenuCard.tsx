@@ -42,6 +42,8 @@ export const MenuCard: React.FC<MenuCardProps> = ({
         <LazyImage
           src={item.image}
           alt={item.name}
+          width={112}
+          height={112}
           containerClassName="w-full h-full"
         />
 

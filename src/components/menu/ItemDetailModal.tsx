@@ -130,6 +130,9 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             <LazyImage
               src={item.image}
               alt={item.name}
+              width={480}
+              height={224}
+              priority={true}
               containerClassName="w-full h-full"
             />
             {/* Tombol Tutup Area Sentuh 44px */}
