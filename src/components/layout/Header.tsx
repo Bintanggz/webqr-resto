@@ -50,17 +50,17 @@ export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
       </div>
 
       {/* Profil Restoran dengan Banyak Ruang Kosong (Whitespace Mewah) */}
-      <div className="app-container pb-8 pt-4">
-        <div className="flex flex-col sm:flex-row sm:items-end gap-5 -mt-14 sm:-mt-16 relative z-10">
-          {/* Logo Restoran */}
+      <div className="app-container pb-8 pt-2">
+        <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 relative z-10">
+          {/* Logo Restoran: Mengambang elegan setengah di atas batas banner */}
           <div
             style={{
               borderRadius: 'var(--radius)',
               backgroundColor: 'var(--surface)',
               borderColor: 'var(--border)',
-              boxShadow: 'var(--shadow-sm)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
             }}
-            className="w-20 h-20 sm:w-24 sm:h-24 p-1.5 border flex-shrink-0 overflow-hidden"
+            className="-mt-12 sm:-mt-14 w-20 h-20 sm:w-24 sm:h-24 p-1.5 border-2 flex-shrink-0 overflow-hidden relative z-10"
           >
             <img
               src={restaurant.logo}
@@ -73,8 +73,8 @@ export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
             />
           </div>
 
-          {/* Nama & Detail Restoran */}
-          <div className="flex-1 min-w-0">
+          {/* Nama & Detail Restoran: Bersih di atas permukaan dengan kontras sempurna */}
+          <div className="flex-1 min-w-0 pt-1 sm:pt-2">
             {/* Tipografi Skala Responsif: 32px (mobile), 40px (tablet), 48px (desktop) */}
             <h1
               style={{
@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
             {restaurant.tagline && (
               <p
                 style={{ color: 'var(--text-muted)' }}
-                className="text-sm md:text-base mt-1 line-clamp-2"
+                className="text-sm md:text-base mt-1.5 line-clamp-2"
               >
                 {restaurant.tagline}
               </p>

@@ -201,9 +201,10 @@ export function applyThemeVariables(
   const finalPrimaryLight = hexToRgba(finalPrimary, 0.1);
   const finalPrimaryText = getContrastTextColor(finalPrimary);
 
-  const finalBg = themeConfig.backgroundColor || basePreset.bg;
+  // Jika preset aktif atau mode gelap aktif, gunakan warna serasi dari preset
+  const finalBg = shouldUseDarkTheme ? basePreset.bg : (themeConfig.backgroundColor || basePreset.bg);
   const finalSurface = basePreset.surface;
-  const finalText = themeConfig.textColor || basePreset.text;
+  const finalText = shouldUseDarkTheme ? basePreset.text : (themeConfig.textColor || basePreset.text);
   const finalTextMuted = basePreset.textMuted;
   const finalAccent = basePreset.accent;
   const finalBorder = basePreset.border;

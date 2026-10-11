@@ -1,18 +1,61 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e293b" />
-      <stop offset="50%" stop-color="#334155" />
-      <stop offset="100%" stop-color="#0f172a" />
+    <!-- Warm Ambient Atmosphere Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#211710" />
+      <stop offset="40%" stop-color="#2D1F16" />
+      <stop offset="70%" stop-color="#3A281D" />
+      <stop offset="100%" stop-color="#1E140E" />
     </linearGradient>
-    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.8" />
-      <stop offset="100%" stop-color="#d97706" stop-opacity="0.2" />
-    </linearGradient>
+
+    <!-- Warm Golden Light Glow -->
+    <radialGradient id="lampGlow1" cx="35%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#E8A858" stop-opacity="0.45" />
+      <stop offset="50%" stop-color="#C87A32" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#2D1F16" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="lampGlow2" cx="80%" cy="40%" r="45%">
+      <stop offset="0%" stop-color="#F2C57C" stop-opacity="0.35" />
+      <stop offset="60%" stop-color="#9C5221" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#211710" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Subtle bokeh blur filter -->
+    <filter id="bokehBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="35" />
+    </filter>
   </defs>
-  <rect width="1200" height="400" fill="url(#bg)" />
-  <circle cx="950" cy="200" r="180" fill="url(#accent)" filter="blur(40px)" />
-  <circle cx="200" cy="100" r="120" fill="url(#accent)" opacity="0.4" filter="blur(50px)" />
-  <text x="60" y="210" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="800" font-size="54" letter-spacing="-1">WARUNG KOPI SENJA &amp; RASA</text>
-  <text x="60" y="260" fill="#fbbf24" font-family="system-ui, sans-serif" font-weight="600" font-size="24" letter-spacing="1">CITA RASA OTENTIK NUSANTARA • SEJAK 2018</text>
+
+  <!-- Deep Warm Rich Background -->
+  <rect width="1200" height="400" fill="url(#bgGrad)" />
+
+  <!-- Ambient Golden Glows -->
+  <circle cx="420" cy="120" r="260" fill="url(#lampGlow1)" filter="url(#bokehBlur)" />
+  <circle cx="960" cy="180" r="220" fill="url(#lampGlow2)" filter="url(#bokehBlur)" />
+  <circle cx="150" cy="280" r="180" fill="url(#lampGlow1)" opacity="0.6" filter="url(#bokehBlur)" />
+
+  <!-- Architectural & Cafe Atmosphere Geometric Details -->
+  <g opacity="0.08" stroke="#FFFFFF" stroke-width="1.5">
+    <!-- Subtle architectural window panes / cafe interior lines -->
+    <line x1="0" y1="140" x2="1200" y2="140" />
+    <line x1="0" y1="280" x2="1200" y2="280" />
+    <line x1="280" y1="0" x2="280" y2="400" />
+    <line x1="600" y1="0" x2="600" y2="400" />
+    <line x1="920" y1="0" x2="920" y2="400" />
+  </g>
+
+  <!-- Warm Bokeh Circles for Cafe Ambiance -->
+  <circle cx="320" cy="160" r="45" fill="#E8A858" opacity="0.12" filter="url(#bokehBlur)" />
+  <circle cx="580" cy="220" r="60" fill="#F2C57C" opacity="0.08" filter="url(#bokehBlur)" />
+  <circle cx="820" cy="110" r="35" fill="#E8A858" opacity="0.15" filter="url(#bokehBlur)" />
+  <circle cx="1050" cy="260" r="50" fill="#C87A32" opacity="0.12" filter="url(#bokehBlur)" />
+
+  <!-- Subtle Bottom Vignette Gradient to blend seamlessly with Header Profile -->
+  <linearGradient id="vignetteBottom" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+    <stop offset="60%" stop-color="#000000" stop-opacity="0.15" />
+    <stop offset="100%" stop-color="#000000" stop-opacity="0.45" />
+  </linearGradient>
+  <rect width="1200" height="400" fill="url(#vignetteBottom)" />
 </svg>

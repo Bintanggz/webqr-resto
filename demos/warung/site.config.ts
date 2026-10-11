@@ -19,10 +19,6 @@ export const siteConfig: SiteConfig = {
   theme: {
     preset: "warm-classic",
     primaryColor: "#8C3B1F",
-    secondaryColor: "#2B2118",
-    backgroundColor: "#FAF6F0",
-    textColor: "#2B2118",
-    fontFamily: "'DM Sans', system-ui, sans-serif",
     borderRadius: "12px",
   },
   orderTypes: {

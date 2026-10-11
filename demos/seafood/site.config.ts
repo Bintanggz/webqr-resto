@@ -19,10 +19,6 @@ export const siteConfig: SiteConfig = {
   theme: {
     preset: "fresh-seafood",
     primaryColor: "#0F4C5C",
-    secondaryColor: "#0F2A33",
-    backgroundColor: "#F4F8F8",
-    textColor: "#0F2A33",
-    fontFamily: "'Manrope', system-ui, sans-serif",
     borderRadius: "12px",
   },
   orderTypes: {
@@ -40,7 +36,7 @@ export const siteConfig: SiteConfig = {
     search: true,
     tableNumber: true,
     promoBanner: true,
-    darkMode: true,
+    darkMode: false,
     itemNotes: true,
     popularBadge: true,
   },

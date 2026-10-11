@@ -19,10 +19,6 @@ export const siteConfig: SiteConfig = {
   theme: {
     preset: "modern-cafe",
     primaryColor: "#3E4A3D",
-    secondaryColor: "#1F1B16",
-    backgroundColor: "#F7F5F2",
-    textColor: "#1F1B16",
-    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
     borderRadius: "12px",
   },
   orderTypes: {
@@ -40,7 +36,7 @@ export const siteConfig: SiteConfig = {
     search: true,
     tableNumber: true,
     promoBanner: true,
-    darkMode: true,
+    darkMode: false,
     itemNotes: true,
     popularBadge: true,
   },

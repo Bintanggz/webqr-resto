@@ -19,10 +19,6 @@ export const siteConfig: SiteConfig = {
   theme: {
     preset: "warm-classic",
     primaryColor: "#8C3B1F",
-    secondaryColor: "#2B2118",
-    backgroundColor: "#FAF6F0",
-    textColor: "#2B2118",
-    fontFamily: "'DM Sans', system-ui, sans-serif",
     borderRadius: "12px",
   },
   orderTypes: {
@@ -40,7 +36,7 @@ export const siteConfig: SiteConfig = {
     search: true,
     tableNumber: true,
     promoBanner: true,
-    darkMode: true,
+    darkMode: false,
     itemNotes: true,
     popularBadge: true,
   },
@@ -48,14 +44,14 @@ export const siteConfig: SiteConfig = {
   promo: [
     {
       id: "promo-cafe-1",
-      title: "☕ Morning Coffee Combo (Hemat 25%)",
+      title: "Morning Coffee Combo (Hemat 25%)",
       description: "Nikmati 1 Latte + 1 Butter Croissant hanya Rp45.000 setiap jam 08:00 - 11:00 WIB.",
       image: "/images/banner.svg",
       isActive: true,
     },
     {
       id: "promo-cafe-2",
-      title: "🍰 Sweet Afternoon Treat",
+      title: "Sweet Afternoon Treat",
       description: "Diskon 15% untuk semua varian Basque Cheesecake setiap pembelian Manual Brew.",
       image: "/images/banner.svg",
       isActive: true,

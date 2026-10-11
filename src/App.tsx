@@ -220,8 +220,8 @@ export function App() {
       {/* 1. Header Identitas Usaha */}
       <Header nomorMeja={tableNumber} />
 
-      {/* Kontainer Pencarian & Filter Cepat */}
-      <div className="app-container">
+      {/* Kontainer Pencarian, Promo, & Filter Cepat */}
+      <div className="app-container py-4 space-y-3">
         {/* 2. Banner Promo Carousel */}
         {siteConfig.features.promoBanner && siteConfig.promo && siteConfig.promo.length > 0 && (
           <PromoCarousel promos={siteConfig.promo} />
