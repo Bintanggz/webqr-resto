@@ -1,0 +1,120 @@
+{
+  "categories": [
+    { "id": "nasi-lauk", "name": "Nasi & Lauk Utama", "icon": "🍗" },
+    { "id": "sayuran", "name": "Aneka Sayur & Sambal", "icon": "🥗" },
+    { "id": "gorengan", "name": "Gorengan & Pelengkap", "icon": "🥟" },
+    { "id": "minuman", "name": "Minuman Tradisional", "icon": "🧊" }
+  ],
+  "items": [
+    {
+      "id": "warung-1",
+      "categoryId": "nasi-lauk",
+      "name": "Nasi Rames Ayam Goreng Lengkuas",
+      "description": "Nasi putih pulen hangat dengan ayam kampung goreng kremes serundeng lengkuas, tahu tempe, lalapan, dan sambal terasi matang.",
+      "price": 26000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris", "pedas"],
+      "variants": [
+        {
+          "name": "Pilihan Sambal",
+          "options": [
+            { "name": "Sambal Terasi Matang", "priceDelta": 0 },
+            { "name": "Sambal Bawang Pedas Nampol", "priceDelta": 0 },
+            { "name": "Sambal Ijo Khas Padang", "priceDelta": 0 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-telur", "name": "Tambah Telur Dadar Krispi", "price": 5000 },
+        { "id": "add-sayur-asem", "name": "Semangkuk Sayur Asem Segar", "price": 6000 }
+      ]
+    },
+    {
+      "id": "warung-2",
+      "categoryId": "nasi-lauk",
+      "name": "Nasi Empal Sapi Serundeng Gurih",
+      "description": "Daging sapi pilihan ungkep bumbu rempah ketumbar manis dan digoreng empuk disajikan dengan serundeng kelapa wangi.",
+      "price": 32000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris"]
+    },
+    {
+      "id": "warung-3",
+      "categoryId": "nasi-lauk",
+      "name": "Ikan Nila Bakar Bumbu Rujak",
+      "description": "Ikan nila air tawar segar dibakar dengan olesan bumbu rujak pedas manis gurih meresap sampai ke serat daging.",
+      "price": 28000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": true,
+      "tags": ["baru", "pedas"]
+    },
+    {
+      "id": "warung-4",
+      "categoryId": "sayuran",
+      "name": "Tumis Kangkung Belacan Pedas",
+      "description": "Kangkung segar dimasak cepat dengan api besar, cabai rawit merah, bawang putih, dan terasi udang gurih wangi.",
+      "price": 14000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["pedas", "vegetarian"]
+    },
+    {
+      "id": "warung-5",
+      "categoryId": "sayuran",
+      "name": "Sayur Lodeh Labu Siam Gurih",
+      "description": "Sayur lodeh santan gurih khas pedesaan dengan potongan labu siam, kacang panjang, tempe, dan melinjo.",
+      "price": 12000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "tags": ["vegetarian"]
+    },
+    {
+      "id": "warung-6",
+      "categoryId": "gorengan",
+      "name": "Bakwan Jagung Manis Renyah (3 pcs)",
+      "description": "Bakwan jagung pipil manis renyah krispi dengan irisan daun seledri dan bumbu ketumbar gurih.",
+      "price": 8000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris", "vegetarian"]
+    },
+    {
+      "id": "warung-7",
+      "categoryId": "minuman",
+      "name": "Es Beras Kencur Segar",
+      "description": "Minuman jamu tradisional segar berkhasiat pelepas dahaga dan penghangat badan alami.",
+      "price": 10000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["vegetarian"]
+    },
+    {
+      "id": "warung-8",
+      "categoryId": "minuman",
+      "name": "Es Teh Manis Melati Jumbo",
+      "description": "Teh dandang wangi melati tubruk disajikan dingin dengan es batu kristal melimpah.",
+      "price": 6000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "tags": ["vegetarian"]
+    }
+  ]
+}

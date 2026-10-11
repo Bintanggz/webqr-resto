@@ -1,14 +1,18 @@
 {
   "name": "webqr-resto",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "generate-qr": "node scripts/generate-qr.js"
+    "generate-qr": "node scripts/generate-qr.js",
+    "demo:cafe": "node scripts/switch-demo.js cafe",
+    "demo:warung": "node scripts/switch-demo.js warung",
+    "demo:seafood": "node scripts/switch-demo.js seafood",
+    "package": "node scripts/package-zip.js"
   },
   "dependencies": {
     "lucide-react": "^1.54.0",

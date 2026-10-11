@@ -1,0 +1,120 @@
+{
+  "categories": [
+    { "id": "kepiting-udang", "name": "Kepiting & Udang", "icon": "🦀" },
+    { "id": "ikan-bakar", "name": "Ikan Bakar Segar", "icon": "🐟" },
+    { "id": "cumi-kerang", "name": "Cumi & Kerang", "icon": "🦑" },
+    { "id": "sayur-minum", "name": "Sayur & Minuman", "icon": "🥥" }
+  ],
+  "items": [
+    {
+      "id": "sea-1",
+      "categoryId": "kepiting-udang",
+      "name": "Kepiting Tarakan Saus Padang Pedas Gurih",
+      "description": "Kepiting hidup pilihan daging padat disiram saus padang rempah kental pedas manis gurih bertabur daun bawang dan kocokan telur.",
+      "price": 145000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris", "pedas"],
+      "variants": [
+        {
+          "name": "Tingkat Kepedasan",
+          "options": [
+            { "name": "Pedas Sedang", "priceDelta": 0 },
+            { "name": "Pedas Gila (Ekstra Rawit)", "priceDelta": 0 },
+            { "name": "Tidak Pedas (Saus Tiram)", "priceDelta": 0 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-mantau", "name": "Roti Mantau Goreng (4 pcs)", "price": 18000 },
+        { "id": "add-jagung", "name": "Ekstra Jagung Manis Rebus", "price": 10000 }
+      ]
+    },
+    {
+      "id": "sea-2",
+      "categoryId": "kepiting-udang",
+      "name": "Udang Pancet Bakar Madu Spesial",
+      "description": "Udang laut ukuran besar dibakar arang dengan olesan saus madu mentega manis gurih harum semerbak.",
+      "price": 85000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris"]
+    },
+    {
+      "id": "sea-3",
+      "categoryId": "ikan-bakar",
+      "name": "Ikan Gurame Bakar Bumbu Jimbaran",
+      "description": "Ikan gurame segar dibakar dengan pasta bumbu cabai tomat khas pantai Jimbaran Bali disajikan dengan sambal matah wangi.",
+      "price": 75000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris", "pedas"]
+    },
+    {
+      "id": "sea-4",
+      "categoryId": "ikan-bakar",
+      "name": "Kerapu Bintang Steam Saus Tiram Jahe",
+      "description": "Ikan kerapu laut kukus dengan kecap asin premium, jahe iris segar, daun ketumbar, dan minyak wijen wangi.",
+      "price": 95000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": true,
+      "tags": ["baru"]
+    },
+    {
+      "id": "sea-5",
+      "categoryId": "cumi-kerang",
+      "name": "Cumi Goreng Tepung Crispy Saus Tartar",
+      "description": "Cincin cumi segar renyah keemasan dibalut tepung rempah krispi disajikan dengan saus tartar mayo gurih asam segar.",
+      "price": 55000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris"]
+    },
+    {
+      "id": "sea-6",
+      "categoryId": "cumi-kerang",
+      "name": "Kerang Dara Rebus Sambal Nanas Serai",
+      "description": "Kerang dara segar direbus bumbu serai dan jahe disajikan dengan cocolan sambal asam pedas nanas segar.",
+      "price": 38000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "tags": ["pedas"]
+    },
+    {
+      "id": "sea-7",
+      "categoryId": "sayur-minum",
+      "name": "Tumis Genjer Tauco Udang",
+      "description": "Sayur genjer segar muda ditumis renyah dengan pasta tauco gurih dan cabai merah keriting.",
+      "price": 22000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "tags": ["vegetarian"]
+    },
+    {
+      "id": "sea-8",
+      "categoryId": "sayur-minum",
+      "name": "Kelapa Muda Utuh Batok Dingin",
+      "description": "Air kelapa muda murni segar langsung dari batoknya disajikan dingin dengan daging kelapa lembut.",
+      "price": 25000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris", "vegetarian"]
+    }
+  ]
+}

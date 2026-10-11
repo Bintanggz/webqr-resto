@@ -11,9 +11,9 @@ export interface PromoBanner {
 }
 
 export interface OrderTypeConfig {
-  dineIn: { enabled: boolean; label: string };
-  takeAway: { enabled: boolean; label: string };
-  delivery: { enabled: boolean; label: string };
+  dineIn: { enabled: boolean; label: string; iconName?: string };
+  takeAway: { enabled: boolean; label: string; iconName?: string };
+  delivery: { enabled: boolean; label: string; iconName?: string };
 }
 
 export interface SiteConfig {

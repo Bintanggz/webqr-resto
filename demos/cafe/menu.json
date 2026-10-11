@@ -1,0 +1,126 @@
+{
+  "categories": [
+    { "id": "coffee", "name": "Specialty Coffee", "icon": "☕" },
+    { "id": "non-coffee", "name": "Non-Coffee & Tea", "icon": "🍵" },
+    { "id": "bakery", "name": "Artisan Bakery", "icon": "🥐" },
+    { "id": "desserts", "name": "Dessert & Cakes", "icon": "🍰" }
+  ],
+  "items": [
+    {
+      "id": "cafe-1",
+      "categoryId": "coffee",
+      "name": "Kopi Susu Senja Gula Aren",
+      "description": "Espresso blend arabika gayo, susu segar creamy, dan gula aren organik cair khas Nusantara.",
+      "price": 24000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris"],
+      "variants": [
+        {
+          "name": "Ukuran Cup",
+          "options": [
+            { "name": "Regular (12 oz)", "priceDelta": 0 },
+            { "name": "Large (16 oz)", "priceDelta": 5000 }
+          ]
+        },
+        {
+          "name": "Tingkat Manis",
+          "options": [
+            { "name": "Normal Sweet (100%)", "priceDelta": 0 },
+            { "name": "Less Sweet (50%)", "priceDelta": 0 }
+          ]
+        }
+      ],
+      "addons": [
+        { "id": "add-shot", "name": "Ekstra Espresso Shot", "price": 6000 },
+        { "id": "add-oat", "name": "Ganti Susu Oat (Oatmilk)", "price": 8000 }
+      ]
+    },
+    {
+      "id": "cafe-2",
+      "categoryId": "coffee",
+      "name": "Caffe Latte Double Shot",
+      "description": "Double ristretto dengan microfoam susu steamed lembut dan silky latte art.",
+      "price": 32000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris"]
+    },
+    {
+      "id": "cafe-3",
+      "categoryId": "coffee",
+      "name": "Caramel Macchiato Ice",
+      "description": "Espresso bold dengan vanilla syrup, susu segar, dan siraman saus karamel gurih di atasnya.",
+      "price": 36000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": true,
+      "tags": ["baru"]
+    },
+    {
+      "id": "cafe-4",
+      "categoryId": "non-coffee",
+      "name": "Kyoto Matcha Latte",
+      "description": "Pure ceremonial matcha Jepang grade A berpadu dengan fresh milk gurih dan aroma floral harum.",
+      "price": 34000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris", "vegetarian"]
+    },
+    {
+      "id": "cafe-5",
+      "categoryId": "non-coffee",
+      "name": "Earl Grey Milk Tea",
+      "description": "Teh hitam Earl Grey beraroma minyak bergamot Italia disajikan dengan susu kental lembut.",
+      "price": 28000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": false,
+      "tags": ["vegetarian"]
+    },
+    {
+      "id": "cafe-6",
+      "categoryId": "bakery",
+      "name": "French Butter Croissant",
+      "description": "Pastry Prancis berlayer renyah keemasan dengan mentega butter asli impor yang harum dan empuk di dalam.",
+      "price": 26000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris", "vegetarian"]
+    },
+    {
+      "id": "cafe-7",
+      "categoryId": "bakery",
+      "name": "Almond Pain au Chocolat",
+      "description": "Pastry cokelat Belgia bertabur irisan kacang almond renyah panggang dan krim almond lembut.",
+      "price": 34000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": false,
+      "isNew": true,
+      "tags": ["baru", "vegetarian"]
+    },
+    {
+      "id": "cafe-8",
+      "categoryId": "desserts",
+      "name": "San Sebastian Basque Cheesecake",
+      "description": "Kue keju panggang Spanyol dengan lapisan karamel terbakar eksotis dan bagian tengah keju lumer meleleh.",
+      "price": 38000,
+      "image": "/images/placeholder.svg",
+      "isAvailable": true,
+      "isPopular": true,
+      "isNew": false,
+      "tags": ["terlaris", "vegetarian"]
+    }
+  ]
+}
