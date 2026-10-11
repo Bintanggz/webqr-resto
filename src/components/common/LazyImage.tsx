@@ -1,54 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface LazyImageProps {
   src: string;
   alt: string;
-  width?: number | string;
-  height?: number | string;
-  className?: string;
   containerClassName?: string;
-  fallbackSrc?: string;
-  priority?: boolean;
+  width?: number;
+  height?: number;
 }
 
 export const LazyImage: React.FC<LazyImageProps> = ({
   src,
   alt,
+  containerClassName = '',
   width,
   height,
-  className = '',
-  containerClassName = '',
-  fallbackSrc = '/images/placeholder.svg',
-  priority = false,
 }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [imgSrc, setImgSrc] = useState(src);
-
   return (
-    <div className={`relative overflow-hidden bg-slate-100 ${containerClassName}`}>
-      {/* Skeleton Shimmer saat memuat gambar */}
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 animate-pulse" />
-      )}
-
-      {/* Gambar dengan Native Lazy Loading & Width/Height untuk Mencegah CLS */}
+    <div
+      style={{ backgroundColor: 'var(--color-bg-subtle)' }}
+      className={`relative overflow-hidden ${containerClassName}`}
+    >
       <img
-        src={imgSrc}
+        src={src}
         alt={alt}
+        loading="lazy"
+        decoding="async"
         width={width}
         height={height}
-        loading={priority ? 'eager' : 'lazy'}
-        decoding="async"
-        onLoad={() => setIsLoaded(true)}
-        onError={() => {
-          if (imgSrc !== fallbackSrc) {
-            setImgSrc(fallbackSrc);
-          }
-          setIsLoaded(true);
-        }}
-        className={`w-full h-full object-cover transition-opacity duration-300 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        } ${className}`}
+        className="w-full h-full object-cover transition-opacity duration-300"
       />
     </div>
   );

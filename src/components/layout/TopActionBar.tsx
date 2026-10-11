@@ -17,7 +17,6 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
   const { features, restaurant, whatsapp } = siteConfig;
   const [copiedToast, setCopiedToast] = useState(false);
 
-  // Jika semua fitur bar atas dinonaktifkan di config, jangan render
   if (
     !features.multiLanguage &&
     !features.shareMenu &&
@@ -26,7 +25,6 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
     return null;
   }
 
-  // Handler Bagikan Menu via Web Share API / Clipboard
   const handleShare = async () => {
     const shareData = {
       title: restaurant.name,
@@ -37,7 +35,7 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-      } catch (err) {
+      } catch {
         // User cancelled share
       }
     } else {
@@ -51,7 +49,6 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
     }
   };
 
-  // Handler Hubungi Kasir via WhatsApp Langsung
   const handleContactWhatsApp = () => {
     const cleanNumber = whatsapp.number.replace(/\D/g, '');
     const message = encodeURIComponent(
@@ -63,99 +60,106 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
   return (
     <div
       style={{
-        backgroundColor: 'var(--color-bg-card)',
-        borderColor: 'var(--color-border)',
+        backgroundColor: 'var(--surface)',
+        borderColor: 'var(--border)',
       }}
-      className="px-4 py-2 border-b flex items-center justify-between gap-2 text-xs relative transition-colors"
+      className="border-b relative transition-colors"
     >
-      {/* Toast Notifikasi Berhasil Salin Link */}
-      {copiedToast && (
-        <div className="absolute top-full left-4 right-4 mt-2 z-50 p-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg animate-in fade-in slide-in-from-top-2">
-          <Check className="w-4 h-4" />
-          <span>{t('shareSuccess')}</span>
-        </div>
-      )}
-
-      {/* Bagian Kiri: Tombol Bahasa ID / EN */}
-      {features.multiLanguage ? (
-        <div className="flex items-center gap-1">
-          <span style={{ color: 'var(--color-text-muted)' }} className="flex items-center gap-1 font-semibold text-[11px] mr-1">
-            <Globe className="w-3.5 h-3.5" />
-          </span>
+      <div className="app-container py-2 flex items-center justify-between gap-3 text-xs">
+        {/* Toast Notifikasi Berhasil Salin Link */}
+        {copiedToast && (
           <div
             style={{
-              borderColor: 'var(--color-border)',
-              backgroundColor: 'var(--color-bg-page)',
-              borderRadius: 'var(--radius-theme)',
+              backgroundColor: 'var(--primary)',
+              borderRadius: '8px',
             }}
-            className="flex items-center p-0.5 border"
+            className="absolute top-full left-4 right-4 mt-2 z-50 p-2.5 text-white font-medium text-xs flex items-center justify-center gap-2 shadow-lg"
           >
-            <button
-              type="button"
-              onClick={() => onToggleLang('id')}
-              style={{
-                borderRadius: 'calc(var(--radius-theme) * 0.75)',
-                backgroundColor: currentLang === 'id' ? 'var(--color-primary)' : 'transparent',
-                color: currentLang === 'id' ? 'var(--color-primary-text)' : 'var(--color-text-muted)',
-              }}
-              className="min-h-[36px] min-w-[36px] px-2 text-[11px] font-bold transition-all"
-            >
-              ID
-            </button>
-            <button
-              type="button"
-              onClick={() => onToggleLang('en')}
-              style={{
-                borderRadius: 'calc(var(--radius-theme) * 0.75)',
-                backgroundColor: currentLang === 'en' ? 'var(--color-primary)' : 'transparent',
-                color: currentLang === 'en' ? 'var(--color-primary-text)' : 'var(--color-text-muted)',
-              }}
-              className="min-h-[36px] min-w-[36px] px-2 text-[11px] font-bold transition-all"
-            >
-              EN
-            </button>
+            <Check className="w-3.5 h-3.5 stroke-[1.5]" />
+            <span>{t('shareSuccess')}</span>
           </div>
+        )}
+
+        {/* Bagian Kiri: Tombol Bahasa ID / EN */}
+        {features.multiLanguage ? (
+          <div className="flex items-center gap-1.5">
+            <Globe className="w-3.5 h-3.5 stroke-[1.5]" style={{ color: 'var(--text-muted)' }} />
+            <div
+              style={{
+                borderColor: 'var(--border)',
+                backgroundColor: 'var(--bg)',
+                borderRadius: '6px',
+              }}
+              className="flex items-center p-0.5 border"
+            >
+              <button
+                type="button"
+                onClick={() => onToggleLang('id')}
+                style={{
+                  borderRadius: '4px',
+                  backgroundColor: currentLang === 'id' ? 'var(--primary)' : 'transparent',
+                  color: currentLang === 'id' ? '#ffffff' : 'var(--text-muted)',
+                }}
+                className="px-2 py-0.5 text-[11px] font-medium transition-colors"
+              >
+                ID
+              </button>
+              <button
+                type="button"
+                onClick={() => onToggleLang('en')}
+                style={{
+                  borderRadius: '4px',
+                  backgroundColor: currentLang === 'en' ? 'var(--primary)' : 'transparent',
+                  color: currentLang === 'en' ? '#ffffff' : 'var(--text-muted)',
+                }}
+                className="px-2 py-0.5 text-[11px] font-medium transition-colors"
+              >
+                EN
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div />
+        )}
+
+        {/* Bagian Kanan: Tombol Bagikan & Hubungi WA */}
+        <div className="flex items-center gap-2">
+          {features.shareMenu && (
+            <button
+              type="button"
+              onClick={handleShare}
+              aria-label={t('shareMenu')}
+              style={{
+                borderRadius: '6px',
+                borderColor: 'var(--border)',
+                backgroundColor: 'var(--bg)',
+                color: 'var(--text)',
+              }}
+              className="px-2.5 py-1.5 border flex items-center gap-1.5 text-xs font-medium hover:border-[var(--primary)] transition-colors"
+            >
+              <Share2 className="w-3 h-3 stroke-[1.5]" style={{ color: 'var(--primary)' }} />
+              <span className="hidden sm:inline">{t('shareMenu')}</span>
+            </button>
+          )}
+
+          {features.contactWhatsApp && (
+            <button
+              type="button"
+              onClick={handleContactWhatsApp}
+              aria-label={t('contactWA')}
+              style={{
+                borderRadius: '6px',
+                borderColor: 'var(--border)',
+                backgroundColor: 'var(--bg)',
+                color: 'var(--text)',
+              }}
+              className="px-2.5 py-1.5 border flex items-center gap-1.5 text-xs font-medium hover:border-[var(--primary)] transition-colors"
+            >
+              <MessageCircle className="w-3 h-3 stroke-[1.5]" style={{ color: 'var(--color-whatsapp)' }} />
+              <span>{t('contactWA')}</span>
+            </button>
+          )}
         </div>
-      ) : (
-        <div />
-      )}
-
-      {/* Bagian Kanan: Tombol Bagikan & Hubungi WA */}
-      <div className="flex items-center gap-1.5">
-        {/* Tombol Bagikan Menu */}
-        {features.shareMenu && (
-          <button
-            type="button"
-            onClick={handleShare}
-            aria-label={t('shareMenu')}
-            style={{
-              borderRadius: 'var(--radius-theme)',
-              borderColor: 'var(--color-border)',
-              backgroundColor: 'var(--color-bg-page)',
-              color: 'var(--color-text-main)',
-            }}
-            className="min-h-[44px] px-3 border flex items-center gap-1.5 text-xs font-bold active:scale-95 transition-all shadow-2xs hover:opacity-90"
-          >
-            <Share2 className="w-3.5 h-3.5 text-amber-500" />
-            <span className="hidden sm:inline">{t('shareMenu')}</span>
-          </button>
-        )}
-
-        {/* Tombol Hubungi Kasir via WA */}
-        {features.contactWhatsApp && (
-          <button
-            type="button"
-            onClick={handleContactWhatsApp}
-            aria-label={t('contactWA')}
-            style={{
-              borderRadius: 'var(--radius-theme)',
-            }}
-            className="min-h-[44px] px-3 bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 text-xs font-bold active:scale-95 transition-all shadow-2xs"
-          >
-            <MessageCircle className="w-3.5 h-3.5" />
-            <span>{t('contactWA')}</span>
-          </button>
-        )}
       </div>
     </div>
   );

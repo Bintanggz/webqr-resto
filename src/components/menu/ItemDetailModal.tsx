@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { MenuItem } from '../../types/menu';
-import { LazyImage } from '../common/LazyImage';
 import { formatRupiah } from '../../utils/currency';
-import { siteConfig } from '../../config/site.config';
+import { LazyImage } from '../common/LazyImage';
 import { X, Plus, Minus, Check } from 'lucide-react';
 
 interface ItemDetailModalProps {
   item: MenuItem | null;
-  isOpen: boolean;
+  isOpen?: boolean;
   onClose: () => void;
   onAddToCart: (
     item: MenuItem,
@@ -15,85 +14,74 @@ interface ItemDetailModalProps {
     selectedVariants: Record<string, string>,
     selectedAddons: string[],
     notes: string,
-    calculatedUnitPrice: number
+    unitPrice: number
   ) => void;
   isViewOnly?: boolean;
-  t?: (key: any, vars?: any) => string;
+  t?: (key: any) => string;
 }
 
 export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   item,
-  isOpen,
+  isOpen = true,
   onClose,
   onAddToCart,
   isViewOnly = false,
-  t,
 }) => {
-  const [quantity, setQuantity] = useState(1);
-  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
-  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
-  const [notes, setNotes] = useState('');
-
-  // Reset state setiap kali modal dibuka dengan item baru
-  useEffect(() => {
-    if (item) {
-      setQuantity(1);
-      setNotes('');
-      setSelectedAddons([]);
-
-      // Set varian pertama sebagai default jika ada varian
-      const initialVariants: Record<string, string> = {};
-      if (item.variants && item.variants.length > 0) {
-        item.variants.forEach((v) => {
-          if (v.options.length > 0) {
-            initialVariants[v.name] = v.options[0].name;
-          }
-        });
-      }
-      setSelectedVariants(initialVariants);
-    }
-  }, [item]);
-
   if (!isOpen || !item) return null;
 
-  // Hitung tambahan harga dari varian
-  let variantDelta = 0;
+  // State untuk varian default
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    if (item.variants) {
+      item.variants.forEach((v) => {
+        if (v.options.length > 0) {
+          initial[v.name] = v.options[0].name;
+        }
+      });
+    }
+    return initial;
+  });
+
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
+  const [quantity, setQuantity] = useState(1);
+  const [notes, setNotes] = useState('');
+
+  // Hitung unitPrice dengan penambahan harga varian & addons
+  let unitPrice = item.price;
+
   if (item.variants) {
     item.variants.forEach((v) => {
-      const chosenOptName = selectedVariants[v.name];
-      const opt = v.options.find((o) => o.name === chosenOptName);
+      const selectedOptionName = selectedVariants[v.name];
+      const opt = v.options.find((o) => o.name === selectedOptionName);
       if (opt && opt.priceDelta) {
-        variantDelta += opt.priceDelta;
+        unitPrice += opt.priceDelta;
       }
     });
   }
 
-  // Hitung tambahan harga dari addon
-  let addonTotal = 0;
   if (item.addons) {
     item.addons.forEach((a) => {
-      if (selectedAddons.includes(a.id)) {
-        addonTotal += a.price;
+      if (selectedAddons.includes(a.name)) {
+        unitPrice += a.price;
       }
     });
   }
 
-  const unitPrice = item.price + variantDelta + addonTotal;
   const totalPrice = unitPrice * quantity;
 
-  const handleToggleAddon = (addonId: string) => {
-    setSelectedAddons((prev) =>
-      prev.includes(addonId)
-        ? prev.filter((id) => id !== addonId)
-        : [...prev, addonId]
-    );
-  };
-
-  const handleSelectVariant = (variantName: string, optionName: string) => {
+  const handleVariantChange = (variantName: string, optionName: string) => {
     setSelectedVariants((prev) => ({
       ...prev,
       [variantName]: optionName,
     }));
+  };
+
+  const toggleAddon = (addonName: string) => {
+    setSelectedAddons((prev) =>
+      prev.includes(addonName)
+        ? prev.filter((name) => name !== addonName)
+        : [...prev, addonName]
+    );
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -107,68 +95,71 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-item-title"
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-6 backdrop-blur-[2px] transition-opacity"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          backgroundColor: 'var(--color-bg-card)',
-          color: 'var(--color-text-main)',
+          backgroundColor: 'var(--surface)',
+          color: 'var(--text)',
         }}
-        className="w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[92vh] sm:max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300"
+        className="w-full md:max-w-[640px] rounded-t-[20px] md:rounded-[12px] max-h-[90vh] md:max-h-[85vh] flex flex-col shadow-2xl overflow-hidden transition-transform"
       >
-        {/* Header Pegangan Bottom-sheet Mobile */}
-        <div className="w-full pt-3 pb-1 flex justify-center sm:hidden">
-          <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full" />
+        {/* Handle bar bottom-sheet mobile */}
+        <div className="w-full pt-3 pb-1 flex justify-center md:hidden">
+          <div
+            style={{ backgroundColor: 'var(--border)' }}
+            className="w-10 h-1 rounded-full"
+          />
         </div>
 
-        {/* Header Konten dengan Tombol Tutup 44px */}
+        {/* Header Gambar & Tombol Tutup */}
         <div className="relative">
-          {/* Foto Besar */}
-          <div className="h-48 sm:h-56 w-full relative bg-slate-100">
+          <div className="h-48 md:h-60 w-full relative bg-[var(--bg)]">
             <LazyImage
               src={item.image}
               alt={item.name}
-              width={480}
-              height={224}
-              priority={true}
-              containerClassName="w-full h-full"
+              width={640}
+              height={260}
+              containerClassName="w-full h-full object-cover"
             />
             {/* Tombol Tutup Area Sentuh 44px */}
             <button
               type="button"
               onClick={onClose}
               aria-label="Tutup jendela"
-              className="absolute top-3 right-3 min-w-[44px] min-h-[44px] flex items-center justify-center text-white bg-slate-900/60 hover:bg-slate-900/80 rounded-full backdrop-blur-md active:scale-90 transition-all z-10"
+              className="absolute top-3 right-3 w-11 h-11 flex items-center justify-center text-white bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-colors z-10"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 stroke-[1.5]" />
             </button>
           </div>
         </div>
 
         {/* Konten Scrollable */}
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
-          {/* Informasi Pokok */}
+          {/* Judul & Deskripsi */}
           <div>
-            <div className="flex items-start justify-between gap-2">
+            <div className="flex items-start justify-between gap-3">
               <h2
                 id="modal-item-title"
-                style={{ color: 'var(--color-text-main)' }}
-                className="text-lg sm:text-xl font-bold leading-snug"
+                style={{ color: 'var(--text)' }}
+                className="text-lg md:text-xl font-semibold leading-snug"
               >
                 {item.name}
               </h2>
+              <div
+                style={{ color: 'var(--primary)' }}
+                className="text-base font-semibold tabular-nums flex-shrink-0"
+              >
+                {formatRupiah(unitPrice)}
+              </div>
             </div>
+
             <p
-              style={{ color: 'var(--color-primary)' }}
-              className="text-base font-extrabold mt-1"
-            >
-              {formatRupiah(unitPrice)}
-            </p>
-            <p
-              style={{ color: 'var(--color-text-muted)' }}
-              className="text-xs sm:text-sm mt-2 leading-relaxed"
+              style={{ color: 'var(--text-muted)' }}
+              className="text-sm leading-[1.6] mt-2"
             >
               {item.description}
             </p>
@@ -176,40 +167,40 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
 
           {/* Pilihan Varian */}
           {item.variants && item.variants.length > 0 && (
-            <div
-              style={{ borderColor: 'var(--color-border)' }}
-              className="space-y-4 pt-3 border-t"
-            >
-              {item.variants.map((v) => (
-                <div key={v.name}>
-                  <p
-                    style={{ color: 'var(--color-text-main)' }}
-                    className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center justify-between"
+            <div className="space-y-4 pt-2 border-t border-[var(--border)]">
+              {item.variants.map((variant) => (
+                <div key={variant.name}>
+                  <label
+                    style={{ color: 'var(--text)' }}
+                    className="block text-xs font-semibold uppercase tracking-wider mb-2"
                   >
-                    <span>{v.name}</span>
-                    <span style={{ color: 'var(--color-text-muted)' }} className="text-[11px] font-normal">
-                      Pilih 1
-                    </span>
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {v.options.map((opt) => {
-                      const isSelected = selectedVariants[v.name] === opt.name;
+                    {variant.name}
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {variant.options.map((opt) => {
+                      const isSelected = selectedVariants[variant.name] === opt.name;
                       return (
                         <button
                           key={opt.name}
                           type="button"
-                          onClick={() => handleSelectVariant(v.name, opt.name)}
+                          onClick={() => handleVariantChange(variant.name, opt.name)}
                           style={{
-                            borderRadius: 'calc(var(--radius-theme) * 0.75)',
-                            borderColor: isSelected ? 'var(--color-primary)' : 'var(--color-border)',
-                            backgroundColor: isSelected ? 'var(--color-primary-light)' : 'var(--color-bg-page)',
-                            color: isSelected ? 'var(--color-primary)' : 'var(--color-text-main)',
+                            borderRadius: '8px',
+                            backgroundColor: isSelected
+                              ? 'var(--primary-light)'
+                              : 'var(--surface)',
+                            borderColor: isSelected
+                              ? 'var(--primary)'
+                              : 'var(--border)',
+                            color: isSelected
+                              ? 'var(--primary)'
+                              : 'var(--text)',
                           }}
-                          className="min-h-[44px] px-3.5 py-2.5 text-xs font-semibold border text-left flex items-center justify-between transition-all"
+                          className="min-h-[44px] px-3 py-2 border text-left text-xs font-medium transition-colors flex items-center justify-between"
                         >
-                          <span className="line-clamp-1">{opt.name}</span>
-                          {opt.priceDelta && opt.priceDelta > 0 ? (
-                            <span style={{ color: 'var(--color-primary)' }} className="text-[11px] font-bold flex-shrink-0 ml-1">
+                          <span className="truncate">{opt.name}</span>
+                          {opt.priceDelta ? (
+                            <span className="text-[11px] font-normal opacity-80 ml-1">
                               +{formatRupiah(opt.priceDelta)}
                             </span>
                           ) : null}
@@ -222,53 +213,50 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             </div>
           )}
 
-          {/* Pilihan Add-ons */}
+          {/* Pilihan Addons */}
           {item.addons && item.addons.length > 0 && (
-            <div
-              style={{ borderColor: 'var(--color-border)' }}
-              className="pt-3 border-t"
-            >
-              <p
-                style={{ color: 'var(--color-text-main)' }}
-                className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center justify-between"
+            <div className="space-y-3 pt-2 border-t border-[var(--border)]">
+              <label
+                style={{ color: 'var(--text)' }}
+                className="block text-xs font-semibold uppercase tracking-wider"
               >
-                <span>Pilihan Tambahan (Add-on)</span>
-                <span style={{ color: 'var(--color-text-muted)' }} className="text-[11px] font-normal">
-                  Opsional
-                </span>
-              </p>
+                Tambahan / Topping
+              </label>
               <div className="space-y-2">
                 {item.addons.map((addon) => {
-                  const isChecked = selectedAddons.includes(addon.id);
+                  const isChecked = selectedAddons.includes(addon.name);
                   return (
                     <button
-                      key={addon.id}
+                      key={addon.name}
                       type="button"
-                      onClick={() => handleToggleAddon(addon.id)}
+                      onClick={() => toggleAddon(addon.name)}
                       style={{
-                        borderRadius: 'calc(var(--radius-theme) * 0.75)',
-                        borderColor: isChecked ? 'var(--color-primary)' : 'var(--color-border)',
-                        backgroundColor: isChecked ? 'var(--color-primary-light)' : 'var(--color-bg-page)',
-                        color: 'var(--color-text-main)',
+                        borderRadius: '8px',
+                        backgroundColor: isChecked
+                          ? 'var(--primary-light)'
+                          : 'var(--surface)',
+                        borderColor: isChecked
+                          ? 'var(--primary)'
+                          : 'var(--border)',
+                        color: isChecked
+                          ? 'var(--primary)'
+                          : 'var(--text)',
                       }}
-                      className="w-full min-h-[44px] px-3.5 py-2.5 text-xs font-semibold border flex items-center justify-between transition-all"
+                      className="w-full min-h-[44px] px-3.5 py-2.5 border flex items-center justify-between text-xs font-medium transition-colors"
                     >
-                      <div className="flex items-center gap-2.5">
-                        <span
+                      <div className="flex items-center gap-2">
+                        <div
                           style={{
-                            backgroundColor: isChecked ? 'var(--color-primary)' : 'transparent',
-                            borderColor: isChecked ? 'var(--color-primary)' : 'var(--color-border)',
-                            color: 'var(--color-primary-text)',
+                            borderColor: isChecked ? 'var(--primary)' : 'var(--border)',
+                            backgroundColor: isChecked ? 'var(--primary)' : 'transparent',
                           }}
-                          className="w-4 h-4 rounded-md border flex items-center justify-center transition-colors"
+                          className="w-4 h-4 rounded border flex items-center justify-center text-white"
                         >
-                          {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
-                        </span>
+                          {isChecked && <Check className="w-3 h-3 stroke-[2]" />}
+                        </div>
                         <span>{addon.name}</span>
                       </div>
-                      <span style={{ color: 'var(--color-primary)' }} className="font-bold">
-                        +{formatRupiah(addon.price)}
-                      </span>
+                      <span className="tabular-nums">+{formatRupiah(addon.price)}</span>
                     </button>
                   );
                 })}
@@ -276,52 +264,47 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             </div>
           )}
 
-          {/* Catatan Tambahan */}
-          {siteConfig.features.itemNotes && (
-            <div
-              style={{ borderColor: 'var(--color-border)' }}
-              className="pt-3 border-t"
+          {/* Catatan Item */}
+          <div className="pt-2 border-t border-[var(--border)]">
+            <label
+              htmlFor="item-notes-input"
+              style={{ color: 'var(--text)' }}
+              className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
             >
-              <label
-                htmlFor="item-notes"
-                style={{ color: 'var(--color-text-main)' }}
-                className="block text-xs font-bold uppercase tracking-wider mb-1.5"
-              >
-                Catatan Khusus
-              </label>
-              <textarea
-                id="item-notes"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Contoh: Jangan pakai seledri, kuah kaldu dipisah ya..."
-                rows={2}
-                style={{
-                  backgroundColor: 'var(--color-bg-page)',
-                  borderColor: 'var(--color-border)',
-                  color: 'var(--color-text-main)',
-                  borderRadius: 'var(--radius-theme)',
-                }}
-                className="w-full border p-3 text-xs placeholder:opacity-60 focus:outline-none transition-all resize-none"
-              />
-            </div>
-          )}
+              Catatan Pesanan
+            </label>
+            <input
+              id="item-notes-input"
+              type="text"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Contoh: Kurangi manis, es dipisah..."
+              style={{
+                backgroundColor: 'var(--surface)',
+                borderColor: 'var(--border)',
+                color: 'var(--text)',
+                borderRadius: '8px',
+              }}
+              className="w-full h-10 border px-3 text-xs focus:outline-none focus:border-[var(--primary)]"
+            />
+          </div>
         </div>
 
-        {/* Footer Bar: Counter & Tombol Tambah Pesanan / Mode Lihat Saja */}
+        {/* Footer Aksi Modal */}
         <div
           style={{
-            borderColor: 'var(--color-border)',
-            backgroundColor: 'var(--color-bg-card)',
+            borderColor: 'var(--border)',
+            backgroundColor: 'var(--surface)',
           }}
           className="p-4 border-t flex items-center gap-3"
         >
           {isViewOnly ? (
-            <div className="w-full flex items-center justify-between gap-3">
+            <div className="w-full flex items-center justify-between">
               <div>
-                <p style={{ color: 'var(--color-text-muted)' }} className="text-xs">
-                  {t ? t('modal_view_only_note') : 'Mode Katalog Menu (Pemesanan di kasir / pelayan)'}
+                <p style={{ color: 'var(--text-muted)' }} className="text-xs">
+                  Katalog Menu Digital
                 </p>
-                <p style={{ color: 'var(--color-primary)' }} className="text-sm font-bold">
+                <p style={{ color: 'var(--primary)' }} className="text-sm font-semibold tabular-nums">
                   {formatRupiah(unitPrice)}
                 </p>
               </div>
@@ -329,39 +312,41 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 type="button"
                 onClick={onClose}
                 style={{
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'var(--color-primary-text)',
-                  borderRadius: 'var(--radius-theme)',
+                  backgroundColor: 'var(--primary)',
+                  color: '#ffffff',
+                  borderRadius: '10px',
+                  height: '48px',
                 }}
-                className="min-h-[44px] px-6 py-2.5 font-bold text-xs sm:text-sm active:scale-95 transition-all shadow-xs"
+                className="px-6 text-sm font-medium transition-colors hover:bg-[var(--primary-hover)]"
               >
-                {t ? t('modal_close') : 'Tutup'}
+                Tutup
               </button>
             </div>
           ) : (
             <>
-              {/* Tombol Kuantitas (- / +) dengan Area Sentuh 44px */}
+              {/* Stepper Kuantitas */}
               <div
                 style={{
-                  borderColor: 'var(--color-border)',
-                  backgroundColor: 'var(--color-bg-page)',
-                  borderRadius: 'var(--radius-theme)',
+                  borderColor: 'var(--border)',
+                  backgroundColor: 'var(--bg)',
+                  borderRadius: '10px',
+                  height: '48px',
                 }}
-                className="flex items-center border shadow-2xs"
+                className="flex items-center border px-1"
               >
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                   disabled={quantity <= 1}
                   aria-label="Kurangi jumlah"
-                  style={{ color: 'var(--color-text-main)' }}
-                  className="min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-30 active:scale-95 transition-all"
+                  style={{ color: 'var(--text)' }}
+                  className="w-10 h-10 flex items-center justify-center disabled:opacity-30 transition-opacity"
                 >
-                  <Minus className="w-4 h-4" />
+                  <Minus className="w-4 h-4 stroke-[1.5]" />
                 </button>
                 <span
-                  style={{ color: 'var(--color-text-main)' }}
-                  className="w-8 text-center font-bold text-sm select-none"
+                  style={{ color: 'var(--text)' }}
+                  className="w-8 text-center font-semibold text-sm tabular-nums select-none"
                 >
                   {quantity}
                 </span>
@@ -369,26 +354,27 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                   type="button"
                   onClick={() => setQuantity((q) => q + 1)}
                   aria-label="Tambah jumlah"
-                  style={{ color: 'var(--color-text-main)' }}
-                  className="min-h-[44px] min-w-[44px] flex items-center justify-center active:scale-95 transition-all"
+                  style={{ color: 'var(--text)' }}
+                  className="w-10 h-10 flex items-center justify-center transition-opacity"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-4 h-4 stroke-[1.5]" />
                 </button>
               </div>
 
-              {/* Tombol Tambah ke Keranjang */}
+              {/* Tombol Tambah ke Keranjang: solid --primary, tinggi 48px, radius 10px */}
               <button
                 type="button"
                 onClick={handleSubmit}
                 style={{
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'var(--color-primary-text)',
-                  borderRadius: 'var(--radius-theme)',
+                  backgroundColor: 'var(--primary)',
+                  color: '#ffffff',
+                  borderRadius: '10px',
+                  height: '48px',
                 }}
-                className="flex-1 min-h-[48px] active:scale-[0.98] font-bold text-xs sm:text-sm px-4 py-3 flex items-center justify-between shadow-md transition-opacity hover:opacity-90"
+                className="flex-1 font-medium text-sm px-4 flex items-center justify-between transition-colors hover:bg-[var(--primary-hover)] active:scale-[0.99]"
               >
-                <span>{t ? t('modal_add_to_cart') : 'Tambah ke Keranjang'}</span>
-                <span>{formatRupiah(totalPrice)}</span>
+                <span>Tambah ke Keranjang</span>
+                <span className="tabular-nums">{formatRupiah(totalPrice)}</span>
               </button>
             </>
           )}

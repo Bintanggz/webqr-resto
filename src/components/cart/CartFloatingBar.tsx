@@ -16,30 +16,44 @@ export const CartFloatingBar: React.FC<CartFloatingBarProps> = ({
   if (totalItems === 0) return null;
 
   return (
-    <aside aria-label="Ringkasan Pesanan" className="fixed bottom-4 left-0 right-0 z-40 px-4 max-w-lg mx-auto">
+    <aside
+      aria-label="Ringkasan Keranjang"
+      className="fixed bottom-4 left-0 right-0 z-40 px-4 sm:px-6 max-w-xl mx-auto pointer-events-none"
+    >
       <button
         onClick={onClick}
         type="button"
-        className="w-full bg-slate-900 text-white p-3.5 rounded-2xl shadow-xl flex items-center justify-between hover:bg-slate-850 active:scale-[0.98] transition-all border border-slate-800"
+        style={{
+          backgroundColor: 'var(--primary)',
+          borderRadius: '14px',
+          height: '56px',
+        }}
+        className="w-full text-white px-4 shadow-lg flex items-center justify-between pointer-events-auto transition-transform active:scale-[0.98] hover:opacity-95"
       >
         <div className="flex items-center gap-3">
-          <div className="relative bg-amber-500 text-white w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shadow">
-            <ShoppingBag className="w-4 h-4" />
-            <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-900 font-extrabold">
+          <div className="relative w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-semibold text-sm">
+            <ShoppingBag className="w-4 h-4 stroke-[1.5]" />
+            <span
+              style={{
+                backgroundColor: 'var(--color-danger)',
+                borderColor: 'var(--primary)',
+              }}
+              className="absolute -top-1 -right-1 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center border font-bold"
+            >
               {totalItems}
             </span>
           </div>
           <div className="text-left">
-            <p className="text-xs text-slate-400 font-medium">Total Pesanan</p>
-            <p className="font-bold text-sm text-white tracking-wide">
+            <p className="text-[11px] opacity-80 leading-none">Total Pesanan</p>
+            <p className="text-[15px] font-semibold tabular-nums mt-0.5 leading-tight">
               {formatRupiah(totalHarga)}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-xs font-semibold bg-white/10 px-3 py-1.5 rounded-xl hover:bg-white/20 transition-colors">
+        <div className="flex items-center gap-1.5 text-xs font-semibold bg-white/15 px-3 py-1.5 rounded-[10px]">
           <span>Lihat Pesanan</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3.5 h-3.5 stroke-[1.5]" />
         </div>
       </button>
     </aside>

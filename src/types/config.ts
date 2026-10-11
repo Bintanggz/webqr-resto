@@ -38,13 +38,13 @@ export interface SiteConfig {
 
   // Tampilan & Tema Warna
   theme: {
-    primaryColor: string;
-    secondaryColor: string;
-    backgroundColor: string;
-    textColor: string;
-    fontFamily: string;
-    borderRadius: string;
-    preset: 'modern' | 'classic' | 'dark';
+    primaryColor?: string;
+    secondaryColor?: string;
+    backgroundColor?: string;
+    textColor?: string;
+    fontFamily?: string;
+    borderRadius?: string;
+    preset: 'warm-classic' | 'modern-cafe' | 'dark-elegant' | 'fresh-seafood' | 'modern' | 'classic' | 'dark';
   };
 
   // Fitur On/Off

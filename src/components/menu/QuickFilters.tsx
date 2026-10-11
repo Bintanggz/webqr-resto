@@ -22,13 +22,13 @@ export const QuickFilters: React.FC<QuickFiltersProps> = ({
   ];
 
   return (
-    <div className="px-4 pt-2.5 pb-1">
+    <div className="pt-2 pb-1">
       <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
         <span
-          style={{ color: 'var(--color-text-muted)' }}
-          className="text-xs font-bold mr-1 flex items-center gap-1 flex-shrink-0"
+          style={{ color: 'var(--text-muted)' }}
+          className="text-xs font-medium mr-1 flex items-center gap-1 flex-shrink-0"
         >
-          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          <Sparkles style={{ color: 'var(--primary)' }} className="w-3.5 h-3.5 stroke-[1.5]" />
           <span>{t('quickFilterLabel')}:</span>
         </span>
 
@@ -40,12 +40,12 @@ export const QuickFilters: React.FC<QuickFiltersProps> = ({
               type="button"
               onClick={() => onSelectFilter(f.id)}
               style={{
-                borderRadius: 'var(--radius-theme)',
-                backgroundColor: isActive ? 'var(--color-primary)' : 'var(--color-bg-page)',
-                borderColor: isActive ? 'var(--color-primary)' : 'var(--color-border)',
-                color: isActive ? 'var(--color-primary-text)' : 'var(--color-text-main)',
+                borderRadius: '8px',
+                backgroundColor: isActive ? 'var(--primary)' : 'var(--surface)',
+                borderColor: isActive ? 'var(--primary)' : 'var(--border)',
+                color: isActive ? '#ffffff' : 'var(--text-muted)',
               }}
-              className="min-h-[44px] px-3.5 text-xs font-bold border whitespace-nowrap active:scale-95 transition-all shadow-2xs flex items-center justify-center"
+              className="min-h-[44px] px-3.5 text-xs font-medium border whitespace-nowrap transition-colors flex items-center justify-center hover:text-[var(--text)]"
             >
               {f.label}
             </button>

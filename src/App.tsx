@@ -24,6 +24,7 @@ import { useLanguage } from './hooks/useLanguage';
 import { useSeo } from './hooks/useSeo';
 import { validateSiteConfig, validateMenuData } from './utils/validation';
 import type { MenuItem } from './types/menu';
+import { Printer } from 'lucide-react';
 
 // Code splitting: Generator QR di-load hanya saat rute /qr dibuka
 const QrGeneratorPage = lazy(() =>
@@ -98,22 +99,19 @@ export function App() {
   );
 
   // Hook Scroll-Spy otomatis mendeteksi kategori yang sedang terlihat di layar
-  const activeSpyId = useScrollSpy(categoryIds, 110);
+  const activeSpyId = useScrollSpy(categoryIds, 120);
 
-  // Validasi konfigurasi & menu JSON saat runtime
+  // Validasi konfigurasi & data menu
   const configValidation = useMemo(() => validateSiteConfig(siteConfig), []);
   const menuValidation = useMemo(() => validateMenuData(menuData), []);
 
-  const allErrors = useMemo(
-    () => [...configValidation.errors, ...menuValidation.errors],
-    [configValidation, menuValidation]
-  );
-  const allWarnings = useMemo(
-    () => [...configValidation.warnings, ...menuValidation.warnings],
-    [configValidation, menuValidation]
-  );
+  const hasConfigIssues =
+    configValidation.errors.length > 0 ||
+    configValidation.warnings.length > 0 ||
+    menuValidation.errors.length > 0 ||
+    menuValidation.warnings.length > 0;
 
-  // Buka modal detail item
+  // Buka detail modal item saat kartu menu diklik
   const handleSelectItem = (item: MenuItem) => {
     setActiveItem(item);
     setIsModalOpen(true);
@@ -162,9 +160,12 @@ export function App() {
     return (
       <Suspense
         fallback={
-          <div className="min-h-screen flex items-center justify-center p-6 text-center text-sm font-bold text-slate-600 bg-slate-50">
-            <div className="animate-pulse flex flex-col items-center gap-2">
-              <span className="text-3xl">🖨️</span>
+          <div
+            style={{ backgroundColor: 'var(--bg)', color: 'var(--text-muted)' }}
+            className="min-h-screen flex items-center justify-center p-6 text-center text-sm font-medium"
+          >
+            <div className="flex flex-col items-center gap-2">
+              <Printer className="w-8 h-8 stroke-[1.5]" style={{ color: 'var(--primary)' }} />
               <span>Memuat Generator QR Meja...</span>
             </div>
           </div>
@@ -182,17 +183,17 @@ export function App() {
     );
   }
 
-  // Jika membuka path yang tidak ada, tampilkan halaman 404
+  // Jika user membuka URL yang tidak dikenal, tampilkan halaman 404
   if (isNotFound) {
     return (
       <NotFoundPage
-        t={t}
         onBackHome={() => {
           if (typeof window !== 'undefined') {
             window.history.pushState({}, '', '/');
           }
           setIsNotFound(false);
         }}
+        t={t}
       />
     );
   }
@@ -200,60 +201,33 @@ export function App() {
   return (
     <div
       style={{
-        backgroundColor: 'var(--color-bg-page)',
-        color: 'var(--color-text-main)',
-        fontFamily: 'var(--font-theme)',
+        backgroundColor: 'var(--bg)',
+        color: 'var(--text)',
       }}
-      className="min-h-screen flex justify-center transition-colors duration-200"
+      className="min-h-screen flex flex-col font-sans transition-colors relative"
     >
-      {/* Container Utama Mobile-First (Maks 480px, Terpusat di Desktop) */}
-      <div
-        style={{
-          backgroundColor: 'var(--color-bg-card)',
-          borderColor: 'var(--color-border)',
-        }}
-        className={`w-full max-w-lg min-h-screen shadow-2xl flex flex-col relative ${
-          !isViewOnly && siteConfig.features.cart ? 'pb-28' : 'pb-12'
-        } border-x transition-colors duration-200`}
-      >
-        {/* Top Action Bar: Ganti Bahasa, Bagikan Menu, Hubungi WhatsApp */}
-        {(siteConfig.features.multiLanguage ||
-          siteConfig.features.shareMenu ||
-          siteConfig.features.contactWhatsApp) && (
-          <TopActionBar
-            currentLang={lang}
-            onToggleLang={setLang}
-            t={t}
-          />
-        )}
+      {/* 0. Peringatan Validasi Config & Menu */}
+      {hasConfigIssues && (
+        <ConfigErrorAlert
+          errors={[...configValidation.errors, ...menuValidation.errors]}
+          warnings={[...configValidation.warnings, ...menuValidation.warnings]}
+        />
+      )}
 
-        {/* 1. Header Usaha (Logo, Banner, Info, Status Buka/Tutup) */}
-        <Header nomorMeja={tableNumber} />
+      {/* Top Action Bar: Ganti Bahasa ID/EN, Bagikan Menu, Hubungi WA */}
+      <TopActionBar currentLang={lang} onToggleLang={setLang} t={t} />
 
-        {/* Banner Mode Hanya Lihat Menu (Jika Aktif) */}
-        {siteConfig.features.viewOnlyMode && (
-          <div
-            style={{
-              backgroundColor: 'var(--color-primary-light)',
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-primary)',
-            }}
-            className="px-4 py-2 border-y text-xs font-semibold flex items-center justify-between"
-          >
-            <span>{t('viewOnlyBadge')}</span>
-            <span className="text-[11px] opacity-80">{t('viewOnlyNote')}</span>
-          </div>
-        )}
+      {/* 1. Header Identitas Usaha */}
+      <Header nomorMeja={tableNumber} />
 
-        {/* Peringatan Format JSON Jika Ada Error */}
-        <ConfigErrorAlert errors={allErrors} warnings={allWarnings} />
-
-        {/* 2. Promo Banner Carousel (Tampil jika fitur aktif) */}
-        {siteConfig.features.promoBanner && (
+      {/* Kontainer Pencarian & Filter Cepat */}
+      <div className="app-container">
+        {/* 2. Banner Promo Carousel */}
+        {siteConfig.features.promoBanner && siteConfig.promo && siteConfig.promo.length > 0 && (
           <PromoCarousel promos={siteConfig.promo} />
         )}
 
-        {/* 3. Bar Pencarian Menu Real-Time */}
+        {/* 3. Bar Pencarian Menu Real-Time (Lebar maksimum di tengah, tidak meregang penuh) */}
         {siteConfig.features.search && (
           <SearchBar
             value={query}
@@ -263,7 +237,7 @@ export function App() {
           />
         )}
 
-        {/* Filter Cepat (Terlaris, Baru, Pedas, Vegetarian, dll) */}
+        {/* Filter Cepat (Terlaris, Baru, Pedas, Vegetarian) */}
         {siteConfig.features.quickFilter && (
           <QuickFilters
             activeFilter={activeQuickFilter}
@@ -271,167 +245,166 @@ export function App() {
             t={t}
           />
         )}
-
-        {/* 4. Tab Kategori Sticky dengan Scroll-Spy */}
-        <CategoryTabs
-          categories={menuData.categories}
-          activeCategoryId={isFiltering ? 'all' : activeSpyId}
-          onSelectCategory={handleSelectCategory}
-          totalAllItems={menuData.items.length}
-        />
-
-        {/* 5. Daftar Item Menu */}
-        <main className="px-4 py-2 flex-1">
-          {/* Tampilan Jika Sedang Mencari Menu atau Menggunakan Filter */}
-          {isFiltering ? (
-            <section className="pt-2">
-              <div className="flex items-center justify-between mb-3">
-                <h2
-                  style={{ color: 'var(--color-text-main)' }}
-                  className="text-sm font-bold"
-                >
-                  {t('searchPlaceholder')}
-                </h2>
-                <span
-                  style={{ color: 'var(--color-text-muted)' }}
-                  className="text-xs"
-                >
-                  {t('menuCount', { count: filteredItems.length })}
-                </span>
-              </div>
-
-              {filteredItems.length > 0 ? (
-                <div className="space-y-3">
-                  {filteredItems.map((item) => (
-                    <MenuCard
-                      key={item.id}
-                      item={item}
-                      onSelect={handleSelectItem}
-                      isViewOnly={isViewOnly}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <SearchEmptyState
-                  query={query || (activeQuickFilter !== 'all' ? activeQuickFilter : undefined)}
-                  onReset={() => {
-                    setQuery('');
-                    setActiveQuickFilter('all');
-                  }}
-                  t={t}
-                />
-              )}
-            </section>
-          ) : (
-            /* Tampilan Normal: Dikelompokkan Per Kategori dengan Scroll-Margin */
-            <div className="space-y-6">
-              {menuData.categories.map((cat) => {
-                const categoryItems = menuData.items.filter(
-                  (item) => item.categoryId === cat.id
-                );
-                if (categoryItems.length === 0) return null;
-
-                return (
-                  <section
-                    key={cat.id}
-                    id={`category-${cat.id}`}
-                    className="scroll-mt-16 pt-3"
-                  >
-                    {/* Header Kategori */}
-                    <div
-                      style={{ borderColor: 'var(--color-border)' }}
-                      className="flex items-center justify-between pb-2.5 mb-3 border-b"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl" role="img" aria-label={cat.name}>
-                          {cat.icon}
-                        </span>
-                        <div>
-                          <h2
-                            style={{ color: 'var(--color-text-main)' }}
-                            className="text-base font-extrabold tracking-tight leading-tight"
-                          >
-                            {cat.name}
-                          </h2>
-                        </div>
-                      </div>
-                      <span
-                        style={{
-                          backgroundColor: 'var(--color-primary-light)',
-                          color: 'var(--color-primary)',
-                          borderRadius: 'var(--radius-theme)',
-                        }}
-                        className="text-[11px] font-bold px-2 py-0.5"
-                      >
-                        {t('menuCount', { count: categoryItems.length })}
-                      </span>
-                    </div>
-
-                    {/* Kartu-kartu Menu dalam Kategori */}
-                    <div className="space-y-3">
-                      {categoryItems.map((item) => (
-                        <MenuCard
-                          key={item.id}
-                          item={item}
-                          onSelect={handleSelectItem}
-                          isViewOnly={isViewOnly}
-                        />
-                      ))}
-                    </div>
-                  </section>
-                );
-              })}
-            </div>
-          )}
-        </main>
-
-        {/* 6. Footer Usaha Lengkap dengan Jam Buka, Maps, & Instagram */}
-        <Footer
-          t={t}
-          onOpenQr={() => {
-            if (typeof window !== 'undefined') {
-              window.history.pushState({}, '', '/qr');
-            }
-            setIsQrPage(true);
-          }}
-        />
-
-        {/* 7. Modal / Bottom-Sheet Detail Item Saat Diklik */}
-        <ItemDetailModal
-          item={activeItem}
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onAddToCart={handleAddToCart}
-          isViewOnly={isViewOnly}
-          t={t}
-        />
-
-        {/* 8. Floating Bar Ringkasan Pesanan (Hanya tampil jika fitur cart aktif dan bukan viewOnlyMode) */}
-        {!isViewOnly && siteConfig.features.cart && (
-          <CartFloatingBar
-            totalItems={totalItems}
-            totalHarga={totalHarga}
-            onClick={() => setIsCartDrawerOpen(true)}
-          />
-        )}
-
-        {/* 9. Drawer / Bottom-Sheet Keranjang & Checkout WhatsApp */}
-        {!isViewOnly && siteConfig.features.cart && (
-          <CartDrawer
-            isOpen={isCartDrawerOpen}
-            onClose={() => setIsCartDrawerOpen(false)}
-            items={cartItems}
-            totalItems={totalItems}
-            totalHarga={totalHarga}
-            onUpdateQuantity={updateQuantity}
-            onUpdateNotes={updateNotes}
-            onRemoveItem={removeItem}
-            onClearCart={clearCart}
-            initialTableNumber={tableNumber}
-            isTableLocked={isTableLocked}
-          />
-        )}
       </div>
+
+      {/* 4. Tab Kategori Sticky dengan Scroll-Spy (Teks dengan Underline, Tanpa Emoji) */}
+      <CategoryTabs
+        categories={menuData.categories}
+        activeCategoryId={isFiltering ? 'all' : activeSpyId}
+        onSelectCategory={handleSelectCategory}
+        totalAllItems={menuData.items.length}
+      />
+
+      {/* 5. Daftar Item Menu */}
+      <main className="app-container py-6 flex-1">
+        {/* Tampilan Jika Sedang Mencari Menu atau Menggunakan Filter */}
+        {isFiltering ? (
+          <section className="pt-2">
+            <div className="flex items-center justify-between mb-4">
+              <h2
+                style={{ color: 'var(--text)' }}
+                className="text-sm font-semibold uppercase tracking-wider"
+              >
+                {t('searchPlaceholder')}
+              </h2>
+              <span
+                style={{ color: 'var(--text-muted)' }}
+                className="text-xs"
+              >
+                {t('menuCount', { count: filteredItems.length })}
+              </span>
+            </div>
+
+            {filteredItems.length > 0 ? (
+              <div className="menu-grid">
+                {filteredItems.map((item) => (
+                  <MenuCard
+                    key={item.id}
+                    item={item}
+                    onSelect={handleSelectItem}
+                    isViewOnly={isViewOnly}
+                  />
+                ))}
+              </div>
+            ) : (
+              <SearchEmptyState
+                query={query || (activeQuickFilter !== 'all' ? activeQuickFilter : undefined)}
+                onReset={() => {
+                  setQuery('');
+                  setActiveQuickFilter('all');
+                }}
+                t={t}
+              />
+            )}
+          </section>
+        ) : (
+          /* Tampilan Normal: Dikelompokkan Per Kategori dengan Scroll-Margin */
+          <div className="space-y-10">
+            {menuData.categories.map((cat) => {
+              const categoryItems = menuData.items.filter(
+                (item) => item.categoryId === cat.id
+              );
+              if (categoryItems.length === 0) return null;
+
+              return (
+                <section
+                  key={cat.id}
+                  id={`category-${cat.id}`}
+                  className="scroll-mt-20 pt-2"
+                >
+                  {/* Header Kategori: Nama kategori 24px (desktop 28px), tanpa emoji */}
+                  <div
+                    style={{ borderColor: 'var(--border)' }}
+                    className="flex items-center justify-between pb-3 mb-6 border-b"
+                  >
+                    <div>
+                      <h2
+                        style={{
+                          color: 'var(--text)',
+                          fontFamily: 'var(--font-heading)',
+                        }}
+                        className="text-[24px] lg:text-[28px] font-semibold leading-tight"
+                      >
+                        {cat.name}
+                      </h2>
+                    </div>
+                    <span
+                      style={{
+                        backgroundColor: 'var(--primary-light)',
+                        color: 'var(--primary)',
+                      }}
+                      className="text-xs font-medium px-2.5 py-0.5 rounded-[4px]"
+                    >
+                      {t('menuCount', { count: categoryItems.length })}
+                    </span>
+                  </div>
+
+                  {/* Grid Menu Responsif: 1 col (mobile) → 2 col (tablet) → 3 col (lg) → 4 col (xl) */}
+                  <div className="menu-grid">
+                    {categoryItems.map((item) => (
+                      <MenuCard
+                        key={item.id}
+                        item={item}
+                        onSelect={handleSelectItem}
+                        isViewOnly={isViewOnly}
+                      />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
+        )}
+      </main>
+
+      {/* 6. Footer Usaha Lengkap */}
+      <Footer
+        t={t}
+        onOpenQr={() => {
+          if (typeof window !== 'undefined') {
+            window.history.pushState({}, '', '/qr');
+          }
+          setIsQrPage(true);
+        }}
+      />
+
+      {/* 7. Modal / Bottom-Sheet Detail Item Saat Diklik */}
+      <ItemDetailModal
+        item={activeItem}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setActiveItem(null);
+        }}
+        onAddToCart={handleAddToCart}
+        isViewOnly={isViewOnly}
+      />
+
+      {/* 8. Floating Bar Ringkasan Pesanan (Mobile & Tablet) */}
+      {!isViewOnly && siteConfig.features.cart && (
+        <CartFloatingBar
+          totalItems={totalItems}
+          totalHarga={totalHarga}
+          onClick={() => setIsCartDrawerOpen(true)}
+        />
+      )}
+
+      {/* 9. Drawer / Bottom-Sheet Keranjang & Checkout WhatsApp */}
+      {!isViewOnly && siteConfig.features.cart && (
+        <CartDrawer
+          isOpen={isCartDrawerOpen}
+          onClose={() => setIsCartDrawerOpen(false)}
+          items={cartItems}
+          totalItems={totalItems}
+          totalHarga={totalHarga}
+          onUpdateQuantity={updateQuantity}
+          onUpdateNotes={updateNotes}
+          onRemoveItem={removeItem}
+          onClearCart={clearCart}
+          initialTableNumber={tableNumber}
+          isTableLocked={isTableLocked}
+        />
+      )}
     </div>
   );
 }

@@ -11,18 +11,18 @@ interface SearchBarProps {
 export const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChange,
-  placeholder = 'Cari makanan, kopi, atau cemilan...',
+  placeholder = 'Cari menu atau minuman favorit...',
   totalResults,
 }) => {
   return (
-    <div className="px-4 pt-3.5">
+    <div className="w-full max-w-xl mx-auto pt-4 pb-2">
       <div className="relative flex items-center">
         {/* Ikon Pencarian */}
         <div
-          style={{ color: 'var(--color-text-muted)' }}
-          className="absolute left-3.5 pointer-events-none"
+          style={{ color: 'var(--text-muted)' }}
+          className="absolute left-3.5 pointer-events-none flex items-center"
         >
-          <Search className="w-4 h-4" />
+          <Search className="w-4 h-4 stroke-[1.5]" />
         </div>
 
         {/* Input Text */}
@@ -33,12 +33,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           placeholder={placeholder}
           aria-label="Cari menu"
           style={{
-            backgroundColor: 'var(--color-bg-page)',
-            borderColor: 'var(--color-border)',
-            color: 'var(--color-text-main)',
-            borderRadius: 'var(--radius-theme)',
+            backgroundColor: 'var(--surface)',
+            borderColor: 'var(--border)',
+            color: 'var(--text)',
+            borderRadius: 'var(--radius)',
+            boxShadow: 'var(--shadow-sm)',
           }}
-          className="w-full h-11 border pl-10 pr-12 text-xs sm:text-sm placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-opacity-20 transition-all shadow-inner"
+          className="w-full h-11 border pl-10 pr-12 text-sm placeholder:opacity-60 focus:outline-none focus:border-[var(--primary)] transition-all"
         />
 
         {/* Tombol Hapus Input (Area sentuh 44px) */}
@@ -47,17 +48,17 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             type="button"
             onClick={() => onChange('')}
             aria-label="Hapus pencarian"
-            style={{ color: 'var(--color-text-muted)' }}
-            className="absolute right-0 w-11 h-11 flex items-center justify-center hover:opacity-80 active:scale-95 transition-all"
+            style={{ color: 'var(--text-muted)' }}
+            className="absolute right-0 w-11 h-11 flex items-center justify-center hover:opacity-80 active:scale-95 transition-opacity"
           >
             <span
               style={{
-                backgroundColor: 'var(--color-border)',
-                color: 'var(--color-text-main)',
+                backgroundColor: 'var(--border)',
+                color: 'var(--text)',
               }}
               className="w-5 h-5 rounded-full flex items-center justify-center"
             >
-              <X className="w-3 h-3" />
+              <X className="w-3 h-3 stroke-[1.5]" />
             </span>
           </button>
         )}
@@ -66,11 +67,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       {/* Informasi Hasil Pencarian jika sedang mencari */}
       {value.trim() && typeof totalResults === 'number' && (
         <p
-          style={{ color: 'var(--color-text-muted)' }}
-          className="text-[11px] mt-1.5 px-1 font-medium"
+          style={{ color: 'var(--text-muted)' }}
+          className="text-xs mt-2 px-1 font-medium"
         >
           Ditemukan{' '}
-          <span style={{ color: 'var(--color-primary)' }} className="font-bold">
+          <span style={{ color: 'var(--primary)' }} className="font-semibold">
             {totalResults}
           </span>{' '}
           menu untuk pencarian &ldquo;{value}&rdquo;

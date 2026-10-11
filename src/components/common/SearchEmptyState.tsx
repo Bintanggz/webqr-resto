@@ -1,5 +1,5 @@
 import React from 'react';
-import { RotateCcw } from 'lucide-react';
+import { Search, RotateCcw } from 'lucide-react';
 
 interface SearchEmptyStateProps {
   query?: string;
@@ -16,29 +16,29 @@ export const SearchEmptyState: React.FC<SearchEmptyStateProps> = ({
     <div className="text-center py-16 px-4">
       <div
         style={{
-          backgroundColor: 'var(--color-bg-page)',
-          borderRadius: 'var(--radius-theme)',
+          backgroundColor: 'var(--surface)',
+          borderColor: 'var(--border)',
         }}
-        className="w-20 h-20 mx-auto flex items-center justify-center text-3xl mb-3 shadow-inner"
+        className="w-16 h-16 mx-auto rounded-full border flex items-center justify-center mb-4"
       >
-        🔍
+        <Search className="w-7 h-7 stroke-[1.5]" style={{ color: 'var(--text-muted)' }} />
       </div>
       <h3
-        style={{ color: 'var(--color-text-main)' }}
-        className="text-base font-extrabold"
+        style={{ color: 'var(--text)' }}
+        className="text-base font-semibold"
       >
         {t('noMenuFound')}
       </h3>
       {query && (
         <p
-          style={{ color: 'var(--color-primary)' }}
-          className="text-xs font-bold mt-0.5"
+          style={{ color: 'var(--primary)' }}
+          className="text-xs font-medium mt-1"
         >
           &ldquo;{query}&rdquo;
         </p>
       )}
       <p
-        style={{ color: 'var(--color-text-muted)' }}
+        style={{ color: 'var(--text-muted)' }}
         className="text-xs mt-1.5 max-w-xs mx-auto leading-relaxed"
       >
         {t('noMenuFoundDesc')}
@@ -48,13 +48,14 @@ export const SearchEmptyState: React.FC<SearchEmptyStateProps> = ({
         type="button"
         onClick={onReset}
         style={{
-          backgroundColor: 'var(--color-primary)',
-          color: 'var(--color-primary-text)',
-          borderRadius: 'var(--radius-theme)',
+          backgroundColor: 'var(--primary)',
+          color: '#ffffff',
+          borderRadius: '10px',
+          height: '48px',
         }}
-        className="mt-5 min-h-[44px] px-5 py-2.5 text-xs font-bold inline-flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+        className="mt-6 px-5 font-medium text-xs inline-flex items-center gap-2 hover:bg-[var(--primary-hover)] transition-colors"
       >
-        <RotateCcw className="w-3.5 h-3.5" />
+        <RotateCcw className="w-3.5 h-3.5 stroke-[1.5]" />
         <span>{t('resetFilter')}</span>
       </button>
     </div>

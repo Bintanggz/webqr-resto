@@ -155,11 +155,12 @@ export const QrGeneratorPage: React.FC<QrGeneratorPageProps> = ({ onBackToMenu }
           </div>
 
           {/* Info Format Cetak A4 */}
-          <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2 text-xs text-slate-500">
-            <p>
-              💡 <strong>Tips Cetak:</strong> Pilih kertas <strong>A4</strong>, orientasi <strong>Portrait</strong>, dan centang <em>&quot;Background graphics&quot;</em> pada dialog print browser.
+          <div className="mt-4 pt-4 border-t border-[var(--border)] flex items-center justify-between flex-wrap gap-2 text-xs text-[var(--text-muted)]">
+            <p className="flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-[var(--primary)] stroke-[1.5]" />
+              <span><strong>Tips Cetak:</strong> Pilih kertas <strong>A4</strong>, orientasi <strong>Portrait</strong>, dan centang <em>&quot;Background graphics&quot;</em> pada dialog print browser.</span>
             </p>
-            <p className="font-semibold text-slate-700">
+            <p className="font-semibold text-[var(--text)]">
               Total {tableNumbers.length} kartu ({Math.ceil(tableNumbers.length / 6)} lembar A4)
             </p>
           </div>

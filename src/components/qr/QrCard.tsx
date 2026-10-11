@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
-import { Download } from 'lucide-react';
+import { Download, UtensilsCrossed } from 'lucide-react';
 import { siteConfig } from '../../config/site.config';
 
 interface QrCardProps {
@@ -131,10 +131,10 @@ export const QrCard: React.FC<QrCardProps> = ({ tableNumber, url }) => {
             <img
               src={siteConfig.restaurant.logo}
               alt=""
-              className="w-7 h-7 object-contain rounded-full border border-slate-200 bg-white"
+              className="w-7 h-7 object-contain rounded-full border border-[var(--border)] bg-white"
             />
           ) : (
-            <span className="text-xl">🍽️</span>
+            <UtensilsCrossed className="w-5 h-5 stroke-[1.5]" style={{ color: 'var(--primary)' }} />
           )}
           <h3 className="font-extrabold text-sm sm:text-base leading-tight text-slate-900 line-clamp-1">
             {siteConfig.restaurant.name}

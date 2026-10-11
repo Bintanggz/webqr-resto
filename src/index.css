@@ -2,66 +2,180 @@
 
 @layer base {
   :root {
-    --color-primary: #f59e0b;
-    --color-primary-hover: #d97706;
-    --color-primary-light: rgba(245, 158, 11, 0.12);
-    --color-primary-text: #ffffff;
-    --color-secondary: #0f172a;
-    --color-bg-page: #f8fafc;
-    --color-bg-card: #ffffff;
-    --color-text-main: #0f172a;
-    --color-text-muted: #64748b;
-    --color-border: #e2e8f0;
-    --radius-theme: 1rem;
-    --font-theme: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    /* ─── Design Tokens (Warm Classic Default) ─── */
+    --bg: #FAF6F0;
+    --surface: #FFFFFF;
+    --text: #2B2118;
+    --text-muted: #7A6A5C;
+    --primary: #8C3B1F;
+    --primary-hover: #732F18;
+    --primary-light: rgba(140, 59, 31, 0.1);
+    --primary-text: #FFFFFF;
+    --accent: #C8963E;
+    --border: #E8DFD3;
+    --radius: 12px;
+    --shadow-sm: 0 1px 3px rgba(43, 33, 24, 0.05);
+
+    /* ─── Tipografi Google Fonts ─── */
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+
+    /* ─── Status & Third-Party ─── */
+    --color-success: #2D6A4F;
+    --color-danger: #B91C1C;
+    --color-whatsapp: #25D366;
+    --color-instagram: #E1306C;
+
+    /* ─── Kompatibilitas Variabel Turunan ─── */
+    --color-bg-page: var(--bg);
+    --color-bg-card: var(--surface);
+    --color-bg-subtle: var(--bg);
+    --color-text-main: var(--text);
+    --color-text-muted: var(--text-muted);
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-primary-light: var(--primary-light);
+    --color-primary-text: var(--primary-text);
+    --color-secondary: var(--text);
+    --color-border: var(--border);
+    --radius-theme: var(--radius);
+    --font-theme: var(--font-body);
+
+    /* ─── Container Padding Responsif ─── */
+    /* 20px (mobile) */
+    --container-pad: 1.25rem;
+  }
+
+  /* 32px (md: tablet) */
+  @media (min-width: 768px) {
+    :root {
+      --container-pad: 2rem;
+    }
+  }
+
+  /* 48px (lg: desktop) */
+  @media (min-width: 1024px) {
+    :root {
+      --container-pad: 3rem;
+    }
   }
 
   body {
-    background-color: var(--color-bg-page);
-    color: var(--color-text-main);
-    font-family: var(--font-theme);
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
     -webkit-tap-highlight-color: transparent;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition: background-color 180ms ease-out, color 180ms ease-out;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1, h2, h3, .font-serif-heading {
+    font-family: var(--font-heading);
   }
 }
 
-/* Utilitas Tema Berbasis CSS Variables */
-.bg-theme-page {
-  background-color: var(--color-bg-page);
+/* ─── Utilitas Container Aplikasi (Maksimal 6xl di tengah) ─── */
+.app-container {
+  width: 100%;
+  max-width: 72rem; /* 1152px / max-w-6xl */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-pad);
+  padding-right: var(--container-pad);
 }
 
-.bg-theme-card {
-  background-color: var(--color-bg-card);
+/* ─── Grid Menu Responsif: 1 col (mobile) → 2 col (tablet) → 3 col (lg) → 4 col (xl) ─── */
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem; /* 20px min gap */
 }
 
-.bg-theme-primary {
-  background-color: var(--color-primary);
+@media (min-width: 768px) {
+  .menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem; /* 24px */
+  }
 }
 
-.bg-theme-primary-light {
-  background-color: var(--color-primary-light);
+@media (min-width: 1024px) {
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
 }
 
-.text-theme-primary {
-  color: var(--color-primary);
+@media (min-width: 1280px) {
+  .menu-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
 }
 
-.text-theme-primary-contrast {
-  color: var(--color-primary-text);
+/* ─── Footer Grid Responsif ─── */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
-.text-theme-main {
-  color: var(--color-text-main);
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
 }
 
-.text-theme-muted {
-  color: var(--color-text-muted);
+/* ─── Tab Kategori Minimalis dengan Garis Bawah (Underline) ─── */
+.category-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 180ms ease-out, border-color 180ms ease-out;
 }
 
-.border-theme {
-  border-color: var(--color-border);
+.category-tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
 }
 
-.rounded-theme {
-  border-radius: var(--radius-theme);
+.category-tab-btn:hover:not(.active) {
+  color: var(--text);
+}
+
+/* ─── Scrollbar Utility ─── */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Transisi Halus (150-200ms ease-out) ─── */
+.smooth-transition {
+  transition: all 180ms ease-out;
+}
+
+/* ─── Aksesibilitas Focus Visible ─── */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ─── Print Utility untuk Halaman QR ─── */
+@media print {
+  .no-print {
+    display: none !important;
+  }
 }

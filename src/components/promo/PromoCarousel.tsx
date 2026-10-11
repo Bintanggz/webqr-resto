@@ -8,102 +8,102 @@ interface PromoCarouselProps {
 
 export const PromoCarousel: React.FC<PromoCarouselProps> = ({ promos }) => {
   const activePromos = promos.filter((p) => p.isActive);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
 
-  // Autoplay berganti slide tiap 5 detik jika ada lebih dari 1 promo
+  // Autoplay berganti slide tiap 6 detik jika promo > 1
   useEffect(() => {
     if (activePromos.length <= 1) return;
-
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % activePromos.length);
-    }, 5000);
-
+      setStartIndex((prev) => (prev + 1) % activePromos.length);
+    }, 6000);
     return () => clearInterval(timer);
   }, [activePromos.length]);
 
   if (activePromos.length === 0) return null;
 
-  const currentPromo = activePromos[currentIndex];
-
   const handlePrev = () => {
-    setCurrentIndex((prev) =>
-      prev === 0 ? activePromos.length - 1 : prev - 1
-    );
+    setStartIndex((prev) => (prev === 0 ? activePromos.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % activePromos.length);
+    setStartIndex((prev) => (prev + 1) % activePromos.length);
   };
 
   return (
-    <div className="px-4 pt-3 select-none">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-white shadow-lg p-4 sm:p-5">
-        {/* Ornamen latar aesthetic */}
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-28 h-28 bg-black/10 rounded-full blur-xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col justify-between min-h-[105px]">
-          <div>
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase">
-                <Tag className="w-3 h-3 text-amber-200" />
-                <span>Promo Spesial</span>
-              </span>
-
-              {activePromos.length > 1 && (
-                <div className="flex items-center gap-1">
-                  {/* Tombol Navigasi dengan touch target minimal 44px */}
-                  <button
-                    onClick={handlePrev}
-                    aria-label="Promo sebelumnya"
-                    className="w-11 h-11 -mr-2 flex items-center justify-center text-white/80 hover:text-white active:scale-90 transition-transform"
-                  >
-                    <span className="w-6 h-6 rounded-full bg-white/15 flex items-center justify-center backdrop-blur-sm">
-                      <ChevronLeft className="w-4 h-4" />
-                    </span>
-                  </button>
-                  <button
-                    onClick={handleNext}
-                    aria-label="Promo berikutnya"
-                    className="w-11 h-11 -mr-1 flex items-center justify-center text-white/80 hover:text-white active:scale-90 transition-transform"
-                  >
-                    <span className="w-6 h-6 rounded-full bg-white/15 flex items-center justify-center backdrop-blur-sm">
-                      <ChevronRight className="w-4 h-4" />
-                    </span>
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <h3 className="text-base sm:text-lg font-bold leading-snug line-clamp-1 text-white drop-shadow-sm">
-              {currentPromo.title}
-            </h3>
-            <p className="text-xs text-amber-100 mt-1 line-clamp-2 leading-relaxed max-w-sm">
-              {currentPromo.description}
-            </p>
-          </div>
-
-          {/* Dots Indicator jika slide > 1 */}
-          {activePromos.length > 1 && (
-            <div className="flex items-center gap-1.5 mt-3 pt-2 border-t border-white/15">
-              {activePromos.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentIndex(idx)}
-                  aria-label={`Lihat promo ke-${idx + 1}`}
-                  className="min-h-[44px] min-w-[20px] flex items-center justify-center"
-                >
-                  <span
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      idx === currentIndex ? 'w-6 bg-white' : 'w-2 bg-white/40'
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
-          )}
+    <section aria-label="Promo Restoran" className="pt-4 pb-2 select-none">
+      <div className="flex items-center justify-between mb-2.5">
+        <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase" style={{ color: 'var(--primary)' }}>
+          <Tag className="w-3.5 h-3.5 stroke-[1.5]" />
+          <span>Promo Spesial</span>
         </div>
+
+        {activePromos.length > 1 && (
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={handlePrev}
+              aria-label="Promo sebelumnya"
+              className="w-8 h-8 rounded-full border flex items-center justify-center transition-colors hover:border-[var(--primary)] text-[var(--text-muted)] hover:text-[var(--text)]"
+              style={{ borderColor: 'var(--border)', backgroundColor: 'var(--surface)' }}
+            >
+              <ChevronLeft className="w-4 h-4 stroke-[1.5]" />
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label="Promo berikutnya"
+              className="w-8 h-8 rounded-full border flex items-center justify-center transition-colors hover:border-[var(--primary)] text-[var(--text-muted)] hover:text-[var(--text)]"
+              style={{ borderColor: 'var(--border)', backgroundColor: 'var(--surface)' }}
+            >
+              <ChevronRight className="w-4 h-4 stroke-[1.5]" />
+            </button>
+          </div>
+        )}
       </div>
-    </div>
+
+      {/* Grid Responsif: 1 slide di Mobile, 2 di Tablet (md), 3 di Desktop (lg) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {activePromos.map((promo, idx) => {
+          // Hanya tampilkan slide yang relevan di mobile jika promo banyak
+          const isCurrentMobile = idx === startIndex;
+          return (
+            <article
+              key={promo.id}
+              style={{
+                backgroundColor: 'var(--surface)',
+                borderColor: 'var(--border)',
+                borderRadius: 'var(--radius)',
+                boxShadow: 'var(--shadow-sm)',
+              }}
+              className={`border p-4 transition-all flex flex-col justify-between ${
+                isCurrentMobile ? 'flex' : 'hidden md:flex'
+              }`}
+            >
+              <div>
+                <h3
+                  style={{ color: 'var(--text)' }}
+                  className="text-[16px] font-semibold leading-snug line-clamp-1"
+                >
+                  {promo.title}
+                </h3>
+                <p
+                  style={{ color: 'var(--text-muted)' }}
+                  className="text-[14px] leading-[1.6] line-clamp-2 mt-1.5"
+                >
+                  {promo.description}
+                </p>
+              </div>
+
+              <div className="mt-4 pt-3 border-t flex items-center justify-between text-xs font-medium" style={{ borderColor: 'var(--border)', color: 'var(--primary)' }}>
+                <span>Berlaku Terbatas</span>
+                <span className="text-[11px] px-2 py-0.5 rounded-[4px]" style={{ backgroundColor: 'var(--primary-light)' }}>
+                  Klaim Saat Order
+                </span>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
   );
 };

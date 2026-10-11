@@ -46,7 +46,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   initialTableNumber,
   isTableLocked,
 }) => {
-  // Ambil tipe pesanan yang diaktifkan di config
   const { orderTypes } = siteConfig;
   const availableOrderTypes: Array<{
     id: 'dineIn' | 'takeAway' | 'delivery';
@@ -76,70 +75,50 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     });
   }
 
-  // State Form Pemesan
-  const [namaPelanggan, setNamaPelanggan] = useState('');
-  const [nomorMeja, setNomorMeja] = useState(initialTableNumber);
-  const [tipePesanan, setTipePesanan] = useState<'dineIn' | 'takeAway' | 'delivery'>(
-    availableOrderTypes[0]?.id || 'dineIn'
-  );
-  const [alamat, setAlamat] = useState('');
-  const [catatanUmum, setCatatanUmum] = useState('');
+  const [customerInfo, setCustomerInfo] = useState<CustomerOrderInfo>({
+    namaPelanggan: '',
+    tipePesanan: availableOrderTypes[0]?.id || 'dineIn',
+    tipePesananLabel: availableOrderTypes[0]?.label || 'Dine In',
+    nomorMeja: initialTableNumber || '',
+    alamat: '',
+    catatanUmum: '',
+  });
 
-  // State catatan item yang sedang diedit
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [tempNoteText, setTempNoteText] = useState('');
 
-  // State validasi error
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   if (!isOpen) return null;
 
-  const currentTypeConfig = availableOrderTypes.find((t) => t.id === tipePesanan);
-  const tipePesananLabel = currentTypeConfig ? currentTypeConfig.label : 'Makan di Tempat';
-
-  // Handler Kirim Pesanan ke WhatsApp
   const handleCheckoutWhatsApp = () => {
-    // 1. Validasi keranjang kosong
     if (items.length === 0) {
-      setErrorMessage('Keranjang Anda masih kosong. Silakan pilih menu terlebih dahulu.');
+      setErrorMessage('Keranjang belanja Anda masih kosong.');
       return;
     }
 
-    // 2. Validasi nama pemesan wajib diisi
-    if (!namaPelanggan.trim()) {
-      setErrorMessage('Silakan masukkan Nama Pemesan sebelum mengirim pesanan.');
-      const nameInput = document.getElementById('input-nama-pelanggan');
-      if (nameInput) nameInput.focus();
+    if (!customerInfo.namaPelanggan.trim()) {
+      setErrorMessage('Harap isi Nama Pemesan terlebih dahulu.');
       return;
     }
 
-    // 3. Validasi nomor meja jika Dine In & tidak locked
-    if (tipePesanan === 'dineIn' && !nomorMeja.trim()) {
-      setErrorMessage('Silakan masukkan Nomor Meja Anda.');
-      const tableInput = document.getElementById('input-nomor-meja');
-      if (tableInput) tableInput.focus();
+    if (
+      customerInfo.tipePesanan === 'dineIn' &&
+      siteConfig.features.tableNumber &&
+      !customerInfo.nomorMeja.trim()
+    ) {
+      setErrorMessage('Harap isi Nomor Meja Anda.');
       return;
     }
 
-    // 4. Validasi alamat jika tipe Delivery
-    if (tipePesanan === 'delivery' && !alamat.trim()) {
-      setErrorMessage('Silakan lengkapi Alamat Pengantaran untuk pesanan antar.');
-      const addressInput = document.getElementById('input-alamat-antar');
-      if (addressInput) addressInput.focus();
+    if (
+      customerInfo.tipePesanan === 'delivery' &&
+      !customerInfo.alamat?.trim()
+    ) {
+      setErrorMessage('Harap cantumkan Alamat Lengkap untuk pengantaran.');
       return;
     }
 
-    // Reset error jika semua valid
     setErrorMessage(null);
-
-    const customerInfo: CustomerOrderInfo = {
-      namaPelanggan,
-      nomorMeja: tipePesanan === 'dineIn' ? nomorMeja : '',
-      tipePesanan,
-      tipePesananLabel,
-      alamat: tipePesanan === 'delivery' ? alamat : undefined,
-      catatanUmum,
-    };
 
     const waUrl = buildWhatsAppOrderUrl(
       siteConfig.whatsapp.number,
@@ -150,8 +129,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       siteConfig.whatsapp.orderTemplate
     );
 
-    // Buka aplikasi WhatsApp
-    window.open(waUrl, '_blank');
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
   };
 
   const startEditNote = (item: CartItem) => {
@@ -169,48 +147,52 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="drawer-cart-title"
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200"
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+      className="fixed inset-0 z-50 flex items-end lg:items-stretch lg:justify-end backdrop-blur-[2px] transition-opacity"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          backgroundColor: 'var(--color-bg-card)',
-          color: 'var(--color-text-main)',
+          backgroundColor: 'var(--surface)',
+          color: 'var(--text)',
         }}
-        className="w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[94vh] sm:max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300"
+        className="w-full lg:w-[460px] rounded-t-[20px] lg:rounded-none max-h-[92vh] lg:max-h-screen lg:h-full flex flex-col shadow-2xl overflow-hidden transition-transform"
       >
         {/* Handle bar mobile */}
-        <div className="w-full pt-3 pb-1 flex justify-center sm:hidden">
-          <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full" />
+        <div className="w-full pt-3 pb-1 flex justify-center lg:hidden">
+          <div
+            style={{ backgroundColor: 'var(--border)' }}
+            className="w-10 h-1 rounded-full"
+          />
         </div>
 
         {/* Header Drawer */}
         <div
-          style={{ borderColor: 'var(--color-border)' }}
+          style={{ borderColor: 'var(--border)' }}
           className="px-5 py-3.5 border-b flex items-center justify-between"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <div
               style={{
-                backgroundColor: 'var(--color-primary)',
-                color: 'var(--color-primary-text)',
-                borderRadius: 'calc(var(--radius-theme) * 0.75)',
+                backgroundColor: 'var(--primary-light)',
+                color: 'var(--primary)',
+                borderRadius: '8px',
               }}
-              className="w-9 h-9 flex items-center justify-center shadow-xs"
+              className="w-8 h-8 flex items-center justify-center"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-4 h-4 stroke-[1.5]" />
             </div>
             <div>
               <h2
                 id="drawer-cart-title"
-                style={{ color: 'var(--color-text-main)' }}
-                className="text-base sm:text-lg font-bold leading-none"
+                style={{ color: 'var(--text)' }}
+                className="text-base font-semibold leading-none"
               >
                 Keranjang Pesanan
               </h2>
               <p
-                style={{ color: 'var(--color-text-muted)' }}
+                style={{ color: 'var(--text-muted)' }}
                 className="text-xs mt-1"
               >
                 {totalItems} item dipilih
@@ -223,26 +205,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  if (confirm('Yakin ingin mengosongkan semua pesanan di keranjang?')) {
+                  if (confirm('Kosongkan semua pesanan di keranjang?')) {
                     onClearCart();
                   }
                 }}
                 title="Kosongkan keranjang"
                 aria-label="Kosongkan keranjang"
-                style={{ color: 'var(--color-text-muted)' }}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:text-rose-600 active:scale-95 transition-colors"
+                style={{ color: 'var(--text-muted)' }}
+                className="w-9 h-9 flex items-center justify-center hover:text-[var(--color-danger)] transition-colors"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-4 h-4 stroke-[1.5]" />
               </button>
             )}
             <button
               type="button"
               onClick={onClose}
               aria-label="Tutup keranjang"
-              style={{ color: 'var(--color-text-muted)' }}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:opacity-80 active:scale-95 transition-colors"
+              style={{ color: 'var(--text-muted)' }}
+              className="w-9 h-9 flex items-center justify-center hover:text-[var(--text)] transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 stroke-[1.5]" />
             </button>
           </div>
         </div>
@@ -251,19 +233,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
           {/* Pesan Kesalahan / Validasi */}
           {errorMessage && (
-            <div className="p-3 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 rounded-xl flex items-start gap-2 text-xs text-rose-800 dark:text-rose-200 animate-in fade-in">
-              <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
+            <div
+              style={{
+                backgroundColor: 'rgba(185, 28, 28, 0.08)',
+                borderColor: 'var(--color-danger)',
+                color: 'var(--color-danger)',
+                borderRadius: '8px',
+              }}
+              className="p-3 border flex items-start gap-2 text-xs"
+            >
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 stroke-[1.5]" />
               <div className="flex-1">
-                <p className="font-bold">Perhatian</p>
-                <p className="mt-0.5">{errorMessage}</p>
+                <p className="font-semibold">{errorMessage}</p>
               </div>
               <button
                 type="button"
                 onClick={() => setErrorMessage(null)}
                 aria-label="Tutup pesan error"
-                className="text-rose-400 hover:text-rose-700 p-1"
+                className="p-1 opacity-70 hover:opacity-100"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-3.5 h-3.5 stroke-[1.5]" />
               </button>
             </div>
           )}
@@ -273,34 +262,35 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <div className="text-center py-12 px-4">
               <div
                 style={{
-                  backgroundColor: 'var(--color-bg-page)',
-                  color: 'var(--color-text-muted)',
+                  backgroundColor: 'var(--bg)',
+                  color: 'var(--text-muted)',
                 }}
-                className="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-3xl mb-3"
+                className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-3"
               >
-                🛒
+                <ShoppingBag className="w-8 h-8 stroke-[1.5]" />
               </div>
               <h3
-                style={{ color: 'var(--color-text-main)' }}
-                className="font-bold text-base"
+                style={{ color: 'var(--text)' }}
+                className="font-semibold text-base"
               >
                 Keranjang Masih Kosong
               </h3>
               <p
-                style={{ color: 'var(--color-text-muted)' }}
-                className="text-xs mt-1 max-w-xs mx-auto"
+                style={{ color: 'var(--text-muted)' }}
+                className="text-xs mt-1 max-w-xs mx-auto leading-relaxed"
               >
-                Silakan pilih makanan dan minuman favorit Anda di menu untuk memesan.
+                Silakan pilih hidangan atau minuman favorit Anda untuk memesan.
               </p>
               <button
                 type="button"
                 onClick={onClose}
                 style={{
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'var(--color-primary-text)',
-                  borderRadius: 'var(--radius-theme)',
+                  backgroundColor: 'var(--primary)',
+                  color: '#ffffff',
+                  borderRadius: '10px',
+                  height: '48px',
                 }}
-                className="mt-5 min-h-[44px] px-6 py-2.5 text-xs font-bold shadow-md active:scale-95 transition-all"
+                className="mt-6 px-6 text-sm font-medium transition-colors hover:bg-[var(--primary-hover)]"
               >
                 Mulai Pilih Menu
               </button>
@@ -310,8 +300,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               {/* 1. Daftar Item yang Dipesan */}
               <div className="space-y-3">
                 <p
-                  style={{ color: 'var(--color-text-muted)' }}
-                  className="text-xs font-bold uppercase tracking-wider"
+                  style={{ color: 'var(--text-muted)' }}
+                  className="text-xs font-semibold uppercase tracking-wider"
                 >
                   Menu Yang Dipesan
                 </p>
@@ -324,193 +314,166 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <div
                       key={item.id}
                       style={{
-                        backgroundColor: 'var(--color-bg-page)',
-                        borderColor: 'var(--color-border)',
-                        borderRadius: 'var(--radius-theme)',
+                        backgroundColor: 'var(--bg)',
+                        borderColor: 'var(--border)',
+                        borderRadius: 'var(--radius)',
                       }}
-                      className="p-3 border flex flex-col gap-2.5 shadow-2xs"
+                      className="p-3 border flex flex-col gap-2.5"
                     >
                       <div className="flex gap-3">
                         {/* Thumbnail */}
                         <div
-                          style={{ borderRadius: 'calc(var(--radius-theme) * 0.75)' }}
-                          className="w-16 h-16 overflow-hidden bg-slate-200 flex-shrink-0"
+                          style={{
+                            borderRadius: '8px',
+                            backgroundColor: 'var(--surface)',
+                          }}
+                          className="w-16 h-16 overflow-hidden flex-shrink-0"
                         >
                           <LazyImage
                             src={item.menuItem.image}
                             alt={item.menuItem.name}
-                            containerClassName="w-full h-full"
+                            containerClassName="w-full h-full object-cover"
                           />
                         </div>
 
                         {/* Info Item */}
                         <div className="flex-1 min-w-0">
                           <h4
-                            style={{ color: 'var(--color-text-main)' }}
-                            className="font-bold text-xs sm:text-sm leading-snug line-clamp-1"
+                            style={{ color: 'var(--text)' }}
+                            className="font-medium text-sm leading-snug line-clamp-1"
                           >
                             {item.menuItem.name}
                           </h4>
-                          <p
-                            style={{ color: 'var(--color-primary)' }}
-                            className="text-xs font-extrabold mt-0.5"
-                          >
-                            {formatRupiah(item.hargaSatuan)}
-                          </p>
 
-                          {/* Chips Varian */}
+                          {/* Detail Varian */}
                           {variantKeys.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {variantKeys.map((vk) => (
-                                <span
-                                  key={vk}
-                                  style={{
-                                    backgroundColor: 'var(--color-bg-card)',
-                                    color: 'var(--color-text-main)',
-                                    borderColor: 'var(--color-border)',
-                                  }}
-                                  className="text-[10px] border px-1.5 py-0.5 rounded-md font-medium"
-                                >
-                                  {vk}: {item.varianTerpilih[vk]}
-                                </span>
-                              ))}
-                            </div>
+                            <p
+                              style={{ color: 'var(--text-muted)' }}
+                              className="text-xs mt-0.5 line-clamp-1"
+                            >
+                              {variantKeys
+                                .map((k) => `${k}: ${item.varianTerpilih[k]}`)
+                                .join(' • ')}
+                            </p>
                           )}
 
-                          {/* Chips Addon */}
-                          {item.addonsTerpilih && item.addonsTerpilih.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {item.addonsTerpilih.map((addonId) => {
-                                const addonObj = item.menuItem.addons?.find(
-                                  (a) => a.id === addonId
-                                );
-                                return (
-                                  <span
-                                    key={addonId}
-                                    style={{
-                                      backgroundColor: 'var(--color-primary-light)',
-                                      color: 'var(--color-primary)',
-                                    }}
-                                    className="text-[10px] px-1.5 py-0.5 rounded-md font-bold"
-                                  >
-                                    +{addonObj ? addonObj.name : addonId}
-                                  </span>
-                                );
-                              })}
-                            </div>
+                          {/* Catatan Item */}
+                          {item.catatan && !isEditingNote && (
+                            <p
+                              style={{ color: 'var(--text-muted)' }}
+                              className="text-xs italic mt-1 bg-[var(--surface)] px-2 py-0.5 rounded border border-[var(--border)] inline-block"
+                            >
+                              Catatan: {item.catatan}
+                            </p>
                           )}
+
+                          {/* Harga Item */}
+                          <p
+                            style={{ color: 'var(--primary)' }}
+                            className="text-xs font-semibold tabular-nums mt-1"
+                          >
+                            {formatRupiah(item.subtotal)}
+                          </p>
                         </div>
                       </div>
 
-                      {/* Baris Catatan Per Item */}
+                      {/* Input Edit Catatan Inline */}
                       {isEditingNote ? (
-                        <div className="flex items-center gap-1.5 pt-1">
+                        <div className="flex gap-2 pt-1 border-t border-[var(--border)]">
                           <input
                             type="text"
                             value={tempNoteText}
                             onChange={(e) => setTempNoteText(e.target.value)}
-                            placeholder="Catatan untuk menu ini..."
+                            placeholder="Tulis catatan (misal: jangan pedas)..."
                             style={{
-                              backgroundColor: 'var(--color-bg-card)',
-                              borderColor: 'var(--color-border)',
-                              color: 'var(--color-text-main)',
+                              backgroundColor: 'var(--surface)',
+                              borderColor: 'var(--border)',
+                              color: 'var(--text)',
+                              borderRadius: '6px',
                             }}
-                            className="flex-1 h-9 border rounded-lg px-2.5 text-xs focus:outline-none"
+                            className="flex-1 border px-2.5 py-1 text-xs focus:outline-none"
                             autoFocus
                           />
                           <button
                             type="button"
                             onClick={() => saveEditNote(item.id)}
                             style={{
-                              backgroundColor: 'var(--color-primary)',
-                              color: 'var(--color-primary-text)',
+                              backgroundColor: 'var(--primary)',
+                              color: '#ffffff',
+                              borderRadius: '6px',
                             }}
-                            className="min-h-[36px] px-3 rounded-lg text-xs font-bold"
+                            className="px-3 py-1 text-xs font-medium"
                           >
                             Simpan
                           </button>
                         </div>
-                      ) : (
-                        <div
-                          style={{ color: 'var(--color-text-muted)' }}
-                          className="flex items-center justify-between text-[11px] pt-1"
-                        >
-                          {item.catatan ? (
-                            <p className="line-clamp-1 italic">
-                              Catatan: &ldquo;{item.catatan}&rdquo;
-                            </p>
-                          ) : (
-                            <span className="opacity-60">Tidak ada catatan</span>
-                          )}
+                      ) : null}
+
+                      {/* Kontrol Jumlah & Tambah Catatan */}
+                      <div
+                        style={{ borderColor: 'var(--border)' }}
+                        className="pt-2 border-t flex items-center justify-between"
+                      >
+                        {siteConfig.features.itemNotes && !isEditingNote && (
                           <button
                             type="button"
                             onClick={() => startEditNote(item)}
-                            style={{ color: 'var(--color-primary)' }}
-                            className="min-h-[32px] px-2 font-bold flex items-center gap-1 active:scale-95"
+                            style={{ color: 'var(--text-muted)' }}
+                            className="text-xs hover:text-[var(--text)] flex items-center gap-1"
                           >
-                            <FileText className="w-3 h-3" />
-                            <span>{item.catatan ? 'Ubah' : '+ Catatan'}</span>
+                            <FileText className="w-3.5 h-3.5 stroke-[1.5]" />
+                            <span>{item.catatan ? 'Ubah Catatan' : '+ Catatan'}</span>
                           </button>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Baris Subtotal & Pengatur Jumlah */}
-                      <div
-                        style={{ borderColor: 'var(--color-border)' }}
-                        className="flex items-center justify-between pt-2 border-t"
-                      >
-                        <span
-                          style={{ color: 'var(--color-text-main)' }}
-                          className="font-extrabold text-xs"
-                        >
-                          Subtotal: {formatRupiah(item.subtotal)}
-                        </span>
-
-                        <div className="flex items-center gap-1">
-                          {/* Hapus Item (Area Sentuh 44px) */}
+                        <div className="flex items-center gap-2 ml-auto">
+                          {/* Tombol Kurang / Hapus */}
                           <button
                             type="button"
-                            onClick={() => onRemoveItem(item.id)}
-                            aria-label={`Hapus ${item.menuItem.name}`}
-                            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-rose-500 hover:text-rose-700 active:scale-90"
+                            onClick={() => {
+                              if (item.kuantitas === 1) {
+                                onRemoveItem(item.id);
+                              } else {
+                                onUpdateQuantity(item.id, -1);
+                              }
+                            }}
+                            style={{
+                              backgroundColor: 'var(--surface)',
+                              borderColor: 'var(--border)',
+                              color: 'var(--text)',
+                              borderRadius: '6px',
+                            }}
+                            aria-label="Kurangi jumlah"
+                            className="w-7 h-7 border flex items-center justify-center hover:opacity-80 transition-opacity"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            {item.kuantitas === 1 ? (
+                              <Trash2 className="w-3.5 h-3.5 text-[var(--color-danger)] stroke-[1.5]" />
+                            ) : (
+                              <Minus className="w-3.5 h-3.5 stroke-[1.5]" />
+                            )}
                           </button>
 
-                          {/* Counter (-) dan (+) */}
-                          <div
-                            style={{
-                              backgroundColor: 'var(--color-bg-card)',
-                              borderColor: 'var(--color-border)',
-                              borderRadius: 'var(--radius-theme)',
-                            }}
-                            className="flex items-center border shadow-2xs"
+                          <span
+                            style={{ color: 'var(--text)' }}
+                            className="font-semibold text-xs tabular-nums min-w-[20px] text-center"
                           >
-                            <button
-                              type="button"
-                              onClick={() => onUpdateQuantity(item.id, -1)}
-                              aria-label="Kurangi 1"
-                              style={{ color: 'var(--color-text-main)' }}
-                              className="min-h-[44px] min-w-[44px] flex items-center justify-center active:scale-90"
-                            >
-                              <Minus className="w-3.5 h-3.5" />
-                            </button>
-                            <span
-                              style={{ color: 'var(--color-text-main)' }}
-                              className="w-6 text-center font-bold text-xs"
-                            >
-                              {item.kuantitas}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => onUpdateQuantity(item.id, 1)}
-                              aria-label="Tambah 1"
-                              style={{ color: 'var(--color-text-main)' }}
-                              className="min-h-[44px] min-w-[44px] flex items-center justify-center active:scale-90"
-                            >
-                              <Plus className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
+                            {item.kuantitas}
+                          </span>
+
+                          {/* Tombol Tambah */}
+                          <button
+                            type="button"
+                            onClick={() => onUpdateQuantity(item.id, 1)}
+                            style={{
+                              backgroundColor: 'var(--primary)',
+                              color: '#ffffff',
+                              borderRadius: '6px',
+                            }}
+                            aria-label="Tambah jumlah"
+                            className="w-7 h-7 flex items-center justify-center hover:opacity-90 transition-opacity"
+                          >
+                            <Plus className="w-3.5 h-3.5 stroke-[1.5]" />
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -518,177 +481,204 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 })}
               </div>
 
-              {/* 2. Opsi Tipe Pesanan */}
-              {availableOrderTypes.length > 1 && (
-                <div className="pt-2">
-                  <p
-                    style={{ color: 'var(--color-text-muted)' }}
-                    className="text-xs font-bold uppercase tracking-wider mb-2"
-                  >
-                    Tipe Pesanan
-                  </p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {availableOrderTypes.map((type) => {
-                      const Icon = type.icon;
-                      const isSelected = tipePesanan === type.id;
-                      return (
-                        <button
-                          key={type.id}
-                          type="button"
-                          onClick={() => setTipePesanan(type.id)}
-                          style={{
-                            borderRadius: 'calc(var(--radius-theme) * 0.75)',
-                            borderColor: isSelected ? 'var(--color-primary)' : 'var(--color-border)',
-                            backgroundColor: isSelected ? 'var(--color-primary-light)' : 'var(--color-bg-page)',
-                            color: isSelected ? 'var(--color-primary)' : 'var(--color-text-main)',
-                          }}
-                          className="min-h-[44px] p-2.5 border text-xs font-bold flex items-center gap-2 transition-all"
-                        >
-                          <Icon className="w-4 h-4 flex-shrink-0" />
-                          <span className="line-clamp-1">{type.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* 3. Form Identitas Pemesan */}
-              <div className="space-y-3 pt-2">
+              {/* 2. Formulir Informasi Pemesan */}
+              <div
+                style={{
+                  backgroundColor: 'var(--bg)',
+                  borderColor: 'var(--border)',
+                  borderRadius: 'var(--radius)',
+                }}
+                className="p-3.5 border space-y-3.5"
+              >
                 <p
-                  style={{ color: 'var(--color-text-muted)' }}
-                  className="text-xs font-bold uppercase tracking-wider"
+                  style={{ color: 'var(--text-muted)' }}
+                  className="text-xs font-semibold uppercase tracking-wider"
                 >
                   Informasi Pemesan
                 </p>
 
-                {/* Input Nama Pemesan (Wajib) */}
+                {/* Pilihan Tipe Pesanan */}
+                {availableOrderTypes.length > 1 && (
+                  <div>
+                    <label
+                      style={{ color: 'var(--text)' }}
+                      className="block text-xs font-medium mb-1.5"
+                    >
+                      Tipe Pesanan
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {availableOrderTypes.map((type) => {
+                        const IconComponent = type.icon;
+                        const isSelected = customerInfo.tipePesanan === type.id;
+                        return (
+                          <button
+                            key={type.id}
+                            type="button"
+                            onClick={() =>
+                              setCustomerInfo((prev) => ({
+                                ...prev,
+                                tipePesanan: type.id,
+                                tipePesananLabel: type.label,
+                              }))
+                            }
+                            style={{
+                              borderRadius: '8px',
+                              backgroundColor: isSelected
+                                ? 'var(--primary)'
+                                : 'var(--surface)',
+                              color: isSelected ? '#ffffff' : 'var(--text)',
+                              borderColor: isSelected
+                                ? 'var(--primary)'
+                                : 'var(--border)',
+                            }}
+                            className="p-2 border text-center transition-colors flex flex-col items-center gap-1 text-xs font-medium"
+                          >
+                            <IconComponent className="w-4 h-4 stroke-[1.5]" />
+                            <span className="truncate w-full">{type.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Input Nama Pemesan */}
                 <div>
                   <label
-                    htmlFor="input-nama-pelanggan"
-                    style={{ color: 'var(--color-text-main)' }}
-                    className="block text-xs font-bold mb-1"
+                    htmlFor="customer-name"
+                    style={{ color: 'var(--text)' }}
+                    className="block text-xs font-medium mb-1"
                   >
-                    Nama Pemesan <span className="text-rose-500">*</span>
+                    Nama Pemesan <span className="text-[var(--color-danger)]">*</span>
                   </label>
                   <input
-                    id="input-nama-pelanggan"
+                    id="customer-name"
                     type="text"
-                    value={namaPelanggan}
-                    onChange={(e) => setNamaPelanggan(e.target.value)}
+                    value={customerInfo.namaPelanggan}
+                    onChange={(e) =>
+                      setCustomerInfo((prev) => ({
+                        ...prev,
+                        namaPelanggan: e.target.value,
+                      }))
+                    }
                     placeholder="Contoh: Budi Santoso"
                     style={{
-                      backgroundColor: 'var(--color-bg-page)',
-                      borderColor: 'var(--color-border)',
-                      color: 'var(--color-text-main)',
-                      borderRadius: 'var(--radius-theme)',
+                      backgroundColor: 'var(--surface)',
+                      borderColor: 'var(--border)',
+                      color: 'var(--text)',
+                      borderRadius: '8px',
                     }}
-                    className="w-full h-11 border px-3.5 text-xs sm:text-sm placeholder:opacity-60 focus:outline-none"
+                    className="w-full h-10 border px-3 text-xs focus:outline-none focus:border-[var(--primary)]"
                   />
                 </div>
 
-                {/* Input Nomor Meja (Khusus Dine In) */}
-                {tipePesanan === 'dineIn' && (
+                {/* Input Nomor Meja (Khusus Dine In & Fitur Aktif) */}
+                {customerInfo.tipePesanan === 'dineIn' && siteConfig.features.tableNumber && (
                   <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label
-                        htmlFor="input-nomor-meja"
-                        style={{ color: 'var(--color-text-main)' }}
-                        className="text-xs font-bold flex items-center gap-1"
-                      >
-                        <span>Nomor Meja</span>
-                        <span className="text-rose-500">*</span>
-                      </label>
+                    <label
+                      htmlFor="table-number"
+                      style={{ color: 'var(--text)' }}
+                      className="block text-xs font-medium mb-1"
+                    >
+                      Nomor Meja <span className="text-[var(--color-danger)]">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="table-number"
+                        type="text"
+                        value={customerInfo.nomorMeja}
+                        readOnly={isTableLocked}
+                        onChange={(e) =>
+                          setCustomerInfo((prev) => ({
+                            ...prev,
+                            nomorMeja: e.target.value,
+                          }))
+                        }
+                        placeholder="Contoh: 12"
+                        style={{
+                          backgroundColor: isTableLocked
+                            ? 'var(--bg)'
+                            : 'var(--surface)',
+                          borderColor: 'var(--border)',
+                          color: 'var(--text)',
+                          borderRadius: '8px',
+                        }}
+                        className={`w-full h-10 border px-3 text-xs focus:outline-none ${
+                          isTableLocked ? 'pr-9 cursor-not-allowed opacity-80' : ''
+                        }`}
+                      />
                       {isTableLocked && (
-                        <span
-                          style={{
-                            backgroundColor: 'var(--color-primary-light)',
-                            color: 'var(--color-primary)',
-                          }}
-                          className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
+                        <div
+                          style={{ color: 'var(--text-muted)' }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2"
+                          title="Terkunci otomatis dari QR Code Meja"
                         >
-                          <Lock className="w-2.5 h-2.5" />
-                          <span>Terkunci dari QR</span>
-                        </span>
+                          <Lock className="w-3.5 h-3.5 stroke-[1.5]" />
+                        </div>
                       )}
                     </div>
-                    <input
-                      id="input-nomor-meja"
-                      type="text"
-                      value={nomorMeja}
-                      onChange={(e) => !isTableLocked && setNomorMeja(e.target.value)}
-                      readOnly={isTableLocked}
-                      placeholder="Contoh: 05"
-                      style={{
-                        backgroundColor: isTableLocked ? 'var(--color-border)' : 'var(--color-bg-page)',
-                        borderColor: 'var(--color-border)',
-                        color: 'var(--color-text-main)',
-                        borderRadius: 'var(--radius-theme)',
-                      }}
-                      className={`w-full h-11 px-3.5 text-xs sm:text-sm font-semibold border ${
-                        isTableLocked ? 'cursor-not-allowed select-none opacity-80' : 'focus:outline-none'
-                      }`}
-                    />
-                    {isTableLocked && (
-                      <p
-                        style={{ color: 'var(--color-text-muted)' }}
-                        className="text-[11px] mt-1"
-                      >
-                        Nomor meja otomatis terbaca dari kode QR meja dan tidak dapat diubah.
-                      </p>
-                    )}
                   </div>
                 )}
 
                 {/* Input Alamat (Khusus Delivery) */}
-                {tipePesanan === 'delivery' && (
+                {customerInfo.tipePesanan === 'delivery' && (
                   <div>
                     <label
-                      htmlFor="input-alamat-antar"
-                      style={{ color: 'var(--color-text-main)' }}
-                      className="block text-xs font-bold mb-1"
+                      htmlFor="delivery-address"
+                      style={{ color: 'var(--text)' }}
+                      className="block text-xs font-medium mb-1"
                     >
-                      Alamat Pengantaran Lengkap <span className="text-rose-500">*</span>
+                      Alamat Pengantaran <span className="text-[var(--color-danger)]">*</span>
                     </label>
                     <textarea
-                      id="input-alamat-antar"
+                      id="delivery-address"
                       rows={2}
-                      value={alamat}
-                      onChange={(e) => setAlamat(e.target.value)}
-                      placeholder="Jl. Merak No. 12, RT 02/04 (Pagar hitam samping minimarket)..."
+                      value={customerInfo.alamat}
+                      onChange={(e) =>
+                        setCustomerInfo((prev) => ({
+                          ...prev,
+                          alamat: e.target.value,
+                        }))
+                      }
+                      placeholder="Masukkan alamat lengkap & patokan..."
                       style={{
-                        backgroundColor: 'var(--color-bg-page)',
-                        borderColor: 'var(--color-border)',
-                        color: 'var(--color-text-main)',
-                        borderRadius: 'var(--radius-theme)',
+                        backgroundColor: 'var(--surface)',
+                        borderColor: 'var(--border)',
+                        color: 'var(--text)',
+                        borderRadius: '8px',
                       }}
-                      className="w-full border p-3 text-xs placeholder:opacity-60 focus:outline-none resize-none"
+                      className="w-full border p-2.5 text-xs focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                 )}
 
-                {/* Catatan Tambahan Umum */}
+                {/* Catatan Umum Tambahan */}
                 <div>
                   <label
-                    htmlFor="input-catatan-umum"
-                    style={{ color: 'var(--color-text-main)' }}
-                    className="block text-xs font-bold mb-1"
+                    htmlFor="general-notes"
+                    style={{ color: 'var(--text)' }}
+                    className="block text-xs font-medium mb-1"
                   >
-                    Catatan Pesanan Tambahan (Opsional)
+                    Catatan Pesanan (Opsional)
                   </label>
                   <input
-                    id="input-catatan-umum"
+                    id="general-notes"
                     type="text"
-                    value={catatanUmum}
-                    onChange={(e) => setCatatanUmum(e.target.value)}
-                    placeholder="Contoh: Minta sendok garpu & sedotan dipisah"
+                    value={customerInfo.catatanUmum}
+                    onChange={(e) =>
+                      setCustomerInfo((prev) => ({
+                        ...prev,
+                        catatanUmum: e.target.value,
+                      }))
+                    }
+                    placeholder="Contoh: Mohon sertakan sendok & tisu..."
                     style={{
-                      backgroundColor: 'var(--color-bg-page)',
-                      borderColor: 'var(--color-border)',
-                      color: 'var(--color-text-main)',
-                      borderRadius: 'var(--radius-theme)',
+                      backgroundColor: 'var(--surface)',
+                      borderColor: 'var(--border)',
+                      color: 'var(--text)',
+                      borderRadius: '8px',
                     }}
-                    className="w-full h-11 border px-3.5 text-xs placeholder:opacity-60 focus:outline-none"
+                    className="w-full h-10 border px-3 text-xs focus:outline-none"
                   />
                 </div>
               </div>
@@ -700,8 +690,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         {items.length > 0 && (
           <div
             style={{
-              borderColor: 'var(--color-border)',
-              backgroundColor: 'var(--color-bg-card)',
+              borderColor: 'var(--border)',
+              backgroundColor: 'var(--surface)',
             }}
             className="p-4 border-t space-y-3"
           >
@@ -709,46 +699,47 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <div className="flex items-center justify-between">
               <div>
                 <p
-                  style={{ color: 'var(--color-text-muted)' }}
+                  style={{ color: 'var(--text-muted)' }}
                   className="text-xs font-medium"
                 >
                   Total Pembayaran
                 </p>
                 <p
-                  style={{ color: 'var(--color-text-muted)' }}
-                  className="text-xs"
+                  style={{ color: 'var(--text-muted)' }}
+                  className="text-[11px]"
                 >
                   ({totalItems} menu)
                 </p>
               </div>
               <p
-                style={{ color: 'var(--color-text-main)' }}
-                className="text-lg sm:text-xl font-extrabold"
+                style={{ color: 'var(--primary)' }}
+                className="text-lg font-semibold tabular-nums"
               >
                 {formatRupiah(totalHarga)}
               </p>
             </div>
 
-            {/* Tombol Pesan via WhatsApp (Min touch target 48px) */}
+            {/* Tombol Pesan via WhatsApp: solid --primary, tinggi 48px, radius 10px */}
             <button
               type="button"
               onClick={handleCheckoutWhatsApp}
               style={{
-                backgroundColor: '#16a34a',
+                backgroundColor: 'var(--primary)',
                 color: '#ffffff',
-                borderRadius: 'var(--radius-theme)',
+                borderRadius: '10px',
+                height: '48px',
               }}
-              className="w-full min-h-[48px] hover:bg-emerald-700 active:scale-[0.98] font-bold text-xs sm:text-sm px-4 py-3 flex items-center justify-center gap-2 shadow-lg transition-all"
+              className="w-full font-medium text-sm px-4 flex items-center justify-center gap-2 transition-colors hover:bg-[var(--primary-hover)] active:scale-[0.99]"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-4 h-4 stroke-[1.5]" />
               <span>Pesan via WhatsApp</span>
             </button>
 
             <p
-              style={{ color: 'var(--color-text-muted)' }}
-              className="text-center text-[11px]"
+              style={{ color: 'var(--text-muted)' }}
+              className="text-center text-[11px] leading-tight"
             >
-              Pesanan akan langsung terformat rapi dan dikirim ke nomor WhatsApp resmi restoran.
+              Pesanan akan otomatis terformat rapi dan dikirim ke nomor WhatsApp resmi restoran.
             </p>
           </div>
         )}
