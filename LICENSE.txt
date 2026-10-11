@@ -1,0 +1,73 @@
+================================================================================
+LISENSI PENGGUNAAN KOMERSIAL RESMI
+TEMPLATE MENU DIGITAL QR RESTORAN (WEBQR RESTO)
+================================================================================
+
+Terima kasih telah membeli template "WebQR Resto - Template Menu Digital QR".
+Dengan membeli, mengunduh, atau menggunakan kode sumber (source code) ini, 
+Anda ("Pembeli / Pemegang Lisensi") menyetujui seluruh syarat dan ketentuan 
+lisensi di bawah ini.
+
+--------------------------------------------------------------------------------
+1. HAK PENGGUNAAN YANG DIBERIKAN (PERMITTED USES)
+--------------------------------------------------------------------------------
+Pembeli diberikan lisensi non-eksklusif, berlaku seumur hidup (lifetime), dan 
+berlaku secara global untuk:
+
+a. Penggunaan Usaha Pribadi:
+   Menggunakan template ini untuk kebutuhan operasional usaha kuliner milik Anda 
+   sendiri (restoran, kafe, warung makan, kedai kopi, kedai boba, bakery, catering, 
+   dan UMKM sejenis) tanpa batas waktu.
+
+b. Penggunaan Proyek Klien (Freelancer / Agensi Digital):
+   Menggunakan template ini sebagai dasar pembuatan website menu digital untuk 
+   klien komersial Anda, di mana Anda menjual layanan jasa pembuatan website menu 
+   kepada pemilik restoran/kafe yang bersangkutan.
+
+c. Modifikasi Bebas:
+   Mengubah, mengedit, menambahkan, atau menghapus konten, logo, warna, tata letak, 
+   data menu, dan kode sumber sesuai kebutuhan bisnis Anda atau klien Anda.
+
+--------------------------------------------------------------------------------
+2. BATASAN & LARANGAN KERAS (RESTRICTIONS)
+--------------------------------------------------------------------------------
+Pembeli DILARANG KERAS untuk:
+
+a. Menjual Ulang Template Mentah (Reselling):
+   Menjual kembali template ini, baik secara utuh maupun modifikasi minor, sebagai 
+   produk digital berupa template atau source code di marketplace manapun 
+   (termasuk namun tidak terbatas pada Envato, Gumroad, Mayar, Lynk.id, Shopee, 
+   Tokopedia, Ratakan, grup media sosial, forum, dsb).
+
+b. Redistribusi Gratis atau Pembajakan:
+   Membagikan, mengunggah, atau mendistribusikan source code ini secara gratis atau 
+   berbayar kepada pihak ketiga, publik, grup Telegram, Google Drive terbuka, atau 
+   repositori publik (GitHub public repo). Harap selalu gunakan repositori privat 
+   (Private Repository) saat mengunggah proyek ini.
+
+c. Sublisensi (Sublicensing):
+   Memberikan hak kepemilikan lisensi ini kepada pihak lain untuk dijual kembali 
+   sebagai template digital.
+
+--------------------------------------------------------------------------------
+3. HAK KEKAYAAN INTELEKTUAL (INTELLECTUAL PROPERTY)
+--------------------------------------------------------------------------------
+Seluruh hak cipta dan kekayaan intelektual atas arsitektur dasar dan template 
+asli ini tetap menjadi milik pencipta/pengembang resmi template WebQR Resto. 
+Pembelian ini memberikan hak guna pakai komersial, bukan pengalihan hak cipta 
+template asli.
+
+--------------------------------------------------------------------------------
+4. BATASAN TANGGUNG JAWAB (DISCLAIMER OF WARRANTY)
+--------------------------------------------------------------------------------
+Produk ini disediakan "sebagaimana adanya" ("AS IS") tanpa jaminan dalam bentuk 
+apapun, baik tersurat maupun tersirat. Pengembang tidak bertanggung jawab atas 
+kerugian finansial, kehilangan data, atau masalah operasional pihak ketiga 
+(termasuk kebijakan API WhatsApp, layanan hosting pihak ketiga, atau downtime 
+server) yang timbul dari penggunaan template ini.
+
+================================================================================
+Dukungan & Pertanyaan:
+Hubungi penjual resmi melalui platform pembelian Anda.
+Hak Cipta © 2026 WebQR Resto. Seluruh Hak Cipta Dilindungi Undang-Undang.
+================================================================================
