@@ -50,7 +50,10 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
   };
 
   const handleContactWhatsApp = () => {
-    const cleanNumber = whatsapp.number.replace(/\D/g, '');
+    let cleanNumber = whatsapp.number.replace(/\D/g, '');
+    if (cleanNumber.startsWith('0')) {
+      cleanNumber = '62' + cleanNumber.slice(1);
+    }
     const message = encodeURIComponent(
       t('contactWAPrompt', { name: restaurant.name })
     );

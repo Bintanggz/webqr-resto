@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
-import { Download, UtensilsCrossed } from 'lucide-react';
+import { Download, Loader2, UtensilsCrossed } from 'lucide-react';
 import { siteConfig } from '../../config/site.config';
 
 interface QrCardProps {
@@ -8,9 +8,38 @@ interface QrCardProps {
   url: string;
 }
 
+/**
+ * Helper untuk menggambar rounded rect dengan fallback jika browser lama tidak mendukung ctx.roundRect
+ */
+function drawRoundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+) {
+  ctx.beginPath();
+  if (typeof ctx.roundRect === 'function') {
+    ctx.roundRect(x, y, width, height, radius);
+  } else {
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+  }
+}
+
 export const QrCard: React.FC<QrCardProps> = ({ tableNumber, url }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [dataUrl, setDataUrl] = useState<string>('');
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -37,71 +66,104 @@ export const QrCard: React.FC<QrCardProps> = ({ tableNumber, url }) => {
 
   // Download high-resolution PNG untuk dicetak per meja
   const handleDownloadPng = async () => {
+    if (isDownloading) return;
+    setIsDownloading(true);
+
     try {
-      // Generate canvas resolusi tinggi (800x800) untuk hasil cetak profesional
       const tempCanvas = document.createElement('canvas');
       tempCanvas.width = 600;
       tempCanvas.height = 780;
       const ctx = tempCanvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        setIsDownloading(false);
+        return;
+      }
 
-      // Background kartu putih
+      // 1. Background kartu putih bersih
+      drawRoundedRect(ctx, 0, 0, 600, 780, 28);
       ctx.fillStyle = '#ffffff';
-      ctx.roundRect(0, 0, 600, 780, 24);
       ctx.fill();
 
-      // Border halus kartu
+      // 2. Border luar kartu yang elegan
+      drawRoundedRect(ctx, 0, 0, 600, 780, 28);
       ctx.lineWidth = 4;
       ctx.strokeStyle = '#e2e8f0';
       ctx.stroke();
 
-      // Header: Nama Restoran
-      ctx.fillStyle = siteConfig.theme.primaryColor || '#d97706';
-      ctx.font = 'bold 32px sans-serif';
+      // 3. Header: Nama Restoran
+      ctx.fillStyle = siteConfig.theme.primaryColor || '#9A3412';
+      ctx.font = 'bold 30px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(siteConfig.restaurant.name, 300, 60);
+      ctx.fillText(siteConfig.restaurant.name, 300, 65);
 
-      // Subheader: Scan untuk lihat menu
+      // 4. Subheader: Scan untuk lihat menu
       ctx.fillStyle = '#475569';
-      ctx.font = '600 20px sans-serif';
-      ctx.fillText('Scan untuk Lihat Menu', 300, 95);
+      ctx.font = 'bold 15px sans-serif';
+      ctx.fillText('SCAN UNTUK LIHAT MENU', 300, 98);
 
-      // Generate QR di tengah
+      // 5. Kotak Frame Putih untuk QR Code
+      drawRoundedRect(ctx, 90, 125, 420, 420, 20);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      drawRoundedRect(ctx, 90, 125, 420, 420, 20);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.stroke();
+
+      // 6. Generate QR di tengah
       const qrDataUrl = await QRCode.toDataURL(url, {
         width: 380,
-        margin: 2,
+        margin: 1,
         errorCorrectionLevel: 'H',
+        color: {
+          dark: '#0f172a',
+          light: '#ffffff',
+        },
       });
 
       const qrImg = new Image();
       qrImg.src = qrDataUrl;
-      await new Promise((resolve) => {
-        qrImg.onload = resolve;
+      await new Promise<void>((resolve, reject) => {
+        qrImg.onload = () => resolve();
+        qrImg.onerror = reject;
       });
-      ctx.drawImage(qrImg, 110, 120, 380, 380);
 
-      // Kotak Badge Nomor Meja
-      ctx.fillStyle = siteConfig.theme.primaryColor || '#d97706';
-      ctx.roundRect(160, 520, 280, 70, 16);
+      // Gambar QR Code di atas frame putih
+      ctx.drawImage(qrImg, 110, 145, 380, 380);
+
+      // 7. Kotak Badge Nomor Meja (Penting: dipanggil terpisah dengan beginPath agar tidak mewarnai seluruh kanvas)
+      drawRoundedRect(ctx, 160, 565, 280, 68, 16);
+      ctx.fillStyle = siteConfig.theme.primaryColor || '#9A3412';
       ctx.fill();
 
-      // Teks Nomor Meja
+      // 8. Teks Nomor Meja
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 36px sans-serif';
-      ctx.fillText(`MEJA ${tableNumber}`, 300, 568);
+      ctx.font = 'bold 34px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`MEJA ${tableNumber}`, 300, 612);
 
-      // Instruksi bawah
-      ctx.fillStyle = '#64748b';
-      ctx.font = '500 16px sans-serif';
-      ctx.fillText('Arahkan kamera HP ke QR Code', 300, 630);
-      ctx.fillText('Tanpa unduh aplikasi • Cepat & Praktis', 300, 658);
+      // 9. Instruksi bawah
+      ctx.fillStyle = '#475569';
+      ctx.font = '600 15px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Arahkan kamera HP ke QR Code', 300, 668);
 
-      // Trigger download
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '500 13px sans-serif';
+      ctx.fillText('Tanpa unduh aplikasi • Cepat & Praktis', 300, 694);
+
+      // 10. Tautan teks kecil
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '400 11px monospace';
+      ctx.fillText(url, 300, 722);
+
+      // 11. Trigger download PNG
       const downloadLink = document.createElement('a');
       downloadLink.download = `QR-Meja-${tableNumber}-${siteConfig.restaurant.name.replace(/\s+/g, '_')}.png`;
       downloadLink.href = tempCanvas.toDataURL('image/png');
       downloadLink.click();
-    } catch {
+    } catch (err) {
+      console.error('Gagal generate kartu QR lengkap, download QR dasar:', err);
       // Fallback download canvas biasa jika error
       if (dataUrl) {
         const link = document.createElement('a');
@@ -109,6 +171,8 @@ export const QrCard: React.FC<QrCardProps> = ({ tableNumber, url }) => {
         link.href = dataUrl;
         link.click();
       }
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -118,10 +182,15 @@ export const QrCard: React.FC<QrCardProps> = ({ tableNumber, url }) => {
       <button
         type="button"
         onClick={handleDownloadPng}
+        disabled={isDownloading}
         title={`Unduh PNG Meja ${tableNumber}`}
-        className="no-print absolute top-3 right-3 min-w-[38px] min-h-[38px] p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 active:scale-95 transition-all flex items-center justify-center shadow-2xs"
+        className="no-print absolute top-3 right-3 min-w-[38px] min-h-[38px] p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 active:scale-95 transition-all flex items-center justify-center shadow-2xs disabled:opacity-60"
       >
-        <Download className="w-4 h-4" />
+        {isDownloading ? (
+          <Loader2 className="w-4 h-4 animate-spin text-[var(--primary)]" />
+        ) : (
+          <Download className="w-4 h-4" />
+        )}
       </button>
 
       {/* Header Kartu: Logo & Nama Restoran */}

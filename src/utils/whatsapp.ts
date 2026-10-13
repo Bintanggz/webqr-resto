@@ -13,8 +13,10 @@ export function buildWhatsAppOrderUrl(
   orderTemplate?: string,
   lang: 'id' | 'en' = 'id'
 ): string {
-  // Bersihkan karakter selain angka
-  const cleanNumber = waNumber.replace(/\D/g, '');
+  let cleanNumber = waNumber.replace(/\D/g, '');
+  if (cleanNumber.startsWith('0')) {
+    cleanNumber = '62' + cleanNumber.slice(1);
+  }
 
   const lines: string[] = [];
 

@@ -392,6 +392,7 @@ export function App() {
       {/* 9. Drawer / Bottom-Sheet Keranjang & Checkout WhatsApp */}
       {!isViewOnly && siteConfig.features.cart && (
         <CartDrawer
+          key={tableNumber || 'default'}
           isOpen={isCartDrawerOpen}
           onClose={() => setIsCartDrawerOpen(false)}
           items={cartItems}

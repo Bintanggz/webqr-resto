@@ -14,19 +14,21 @@ export function useMenuSearch(items: MenuItem[]) {
       const matchCategory =
         selectedCategory === 'all' || item.categoryId === selectedCategory;
 
-      // 2. Filter Teks Pencarian (nama & deskripsi)
+      // 2. Filter Teks Pencarian (nama & deskripsi dalam ID maupun EN)
       const cleanQuery = query.toLowerCase().trim();
       const matchQuery =
         !cleanQuery ||
         item.name.toLowerCase().includes(cleanQuery) ||
-        item.description.toLowerCase().includes(cleanQuery);
+        item.description.toLowerCase().includes(cleanQuery) ||
+        (item.nameEn ? item.nameEn.toLowerCase().includes(cleanQuery) : false) ||
+        (item.descriptionEn ? item.descriptionEn.toLowerCase().includes(cleanQuery) : false);
 
       // 3. Filter Cepat (Quick Filters)
       let matchQuickFilter = true;
       if (activeQuickFilter === 'popular') {
-        matchQuickFilter = item.isPopular;
+        matchQuickFilter = item.isPopular || Boolean(item.tags?.includes('terlaris'));
       } else if (activeQuickFilter === 'new') {
-        matchQuickFilter = item.isNew;
+        matchQuickFilter = item.isNew || Boolean(item.tags?.includes('baru'));
       } else if (activeQuickFilter === 'pedas') {
         matchQuickFilter = Boolean(item.tags?.includes('pedas'));
       } else if (activeQuickFilter === 'vegetarian') {

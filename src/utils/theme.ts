@@ -208,7 +208,7 @@ export function applyThemeVariables(
   const finalTextMuted = basePreset.textMuted;
   const finalAccent = basePreset.accent;
   const finalBorder = basePreset.border;
-  const finalRadius = themeConfig.borderRadius === 'rounded-2xl' ? '12px' : (basePreset.radius || '12px');
+  const finalRadius = themeConfig.borderRadius || basePreset.radius || '16px';
 
   const root = document.documentElement;
 
@@ -231,6 +231,8 @@ export function applyThemeVariables(
   // Status & Third-party
   root.style.setProperty('--color-success', basePreset.success);
   root.style.setProperty('--color-danger', basePreset.danger);
+  root.style.setProperty('--color-danger-light', hexToRgba(basePreset.danger, 0.1));
+  root.style.setProperty('--color-danger-text', basePreset.danger);
   root.style.setProperty('--color-whatsapp', basePreset.whatsapp);
   root.style.setProperty('--color-instagram', basePreset.instagram);
 
