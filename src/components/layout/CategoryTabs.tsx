@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import type { MenuCategory } from '../../types/menu';
+import { useLanguage } from '../../hooks/useLanguage';
 
 interface CategoryTabsProps {
   categories: MenuCategory[];
@@ -16,6 +17,7 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const activeTabRef = useRef<HTMLButtonElement>(null);
+  const { lang, t } = useLanguage();
 
   // Auto-scroll tab aktif agar selalu terlihat di layar
   useEffect(() => {
@@ -55,7 +57,7 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
             activeCategoryId === 'all' ? 'shadow-sm scale-[1.02]' : 'hover:border-neutral-400 hover:text-[var(--text)] bg-neutral-50 dark:bg-neutral-800/60'
           }`}
         >
-          <span>Semua Menu</span>
+          <span>{t('allMenu')}</span>
           {totalAllItems ? (
             <span
               style={{
@@ -72,6 +74,8 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
         {/* Tab Kategori - Modern Rounded Pill Chips */}
         {categories.map((cat) => {
           const isActive = activeCategoryId === cat.id;
+          const catName = lang === 'en' && cat.nameEn ? cat.nameEn : cat.name;
+
           return (
             <button
               key={cat.id}
@@ -87,7 +91,7 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
                 isActive ? 'shadow-sm scale-[1.02]' : 'hover:border-neutral-400 hover:text-[var(--text)] bg-neutral-50 dark:bg-neutral-800/60'
               }`}
             >
-              <span>{cat.name}</span>
+              <span>{catName}</span>
             </button>
           );
         })}

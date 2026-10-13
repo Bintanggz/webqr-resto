@@ -3,6 +3,7 @@ import type { MenuItem } from '../../types/menu';
 import { PriceTag } from '../common/PriceTag';
 import { LazyImage } from '../common/LazyImage';
 import { siteConfig } from '../../config/site.config';
+import { useLanguage } from '../../hooks/useLanguage';
 import { Plus, Flame, Leaf } from 'lucide-react';
 
 interface MenuCardProps {
@@ -16,8 +17,12 @@ export const MenuCard: React.FC<MenuCardProps> = ({
   onSelect,
   isViewOnly = false,
 }) => {
+  const { lang, t } = useLanguage();
   const showPopular = siteConfig.features.popularBadge && item.isPopular;
   const isAvailable = item.isAvailable;
+
+  const itemName = lang === 'en' && item.nameEn ? item.nameEn : item.name;
+  const itemDescription = lang === 'en' && item.descriptionEn ? item.descriptionEn : item.description;
 
   return (
     <article
@@ -45,23 +50,23 @@ export const MenuCard: React.FC<MenuCardProps> = ({
         <div className="w-full h-full transform group-hover:scale-105 transition-transform duration-500 ease-out">
           <LazyImage
             src={item.image}
-            alt={item.name}
+            alt={itemName}
             width={300}
             height={225}
             containerClassName="w-full h-full object-cover"
           />
         </div>
 
-        {/* Floating Badges on Image (Ala GoFood / GrabFood) */}
+        {/* Floating Badges on Image */}
         <div className="absolute top-2 left-2 flex flex-col gap-1 items-start z-10">
           {showPopular && isAvailable && (
             <span className="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm flex items-center gap-0.5 tracking-tight">
-              🔥 Terlaris
+              🔥 {t('bestSeller')}
             </span>
           )}
           {item.isNew && isAvailable && (
             <span className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm tracking-tight">
-              ✨ Baru
+              ✨ {t('new')}
             </span>
           )}
         </div>
@@ -73,7 +78,7 @@ export const MenuCard: React.FC<MenuCardProps> = ({
             className="absolute inset-0 flex items-center justify-center p-1 backdrop-blur-[2px] z-20"
           >
             <span className="bg-rose-600 text-white text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow">
-              Habis
+              {t('soldOut')}
             </span>
           </div>
         )}
@@ -88,19 +93,19 @@ export const MenuCard: React.FC<MenuCardProps> = ({
               style={{ color: 'var(--text)' }}
               className="text-[15px] sm:text-[16px] font-bold leading-snug line-clamp-1 group-hover:text-[var(--primary)] transition-colors"
             >
-              {item.name}
+              {itemName}
             </h3>
 
             {/* Ikon Pedas */}
             {item.tags?.includes('pedas') && isAvailable && (
-              <span title="Pedas" className="text-rose-500 inline-flex items-center">
+              <span title={t('spicy')} className="text-rose-500 inline-flex items-center">
                 <Flame className="w-3.5 h-3.5 stroke-[2]" />
               </span>
             )}
 
             {/* Ikon Vegetarian */}
             {item.tags?.includes('vegetarian') && isAvailable && (
-              <span title="Vegetarian" className="text-emerald-600 inline-flex items-center">
+              <span title={t('vegetarian')} className="text-emerald-600 inline-flex items-center">
                 <Leaf className="w-3.5 h-3.5 stroke-[2]" />
               </span>
             )}
@@ -111,17 +116,17 @@ export const MenuCard: React.FC<MenuCardProps> = ({
             style={{ color: 'var(--text-muted)' }}
             className="text-[13px] leading-[1.5] line-clamp-2 mt-1"
           >
-            {item.description}
+            {itemDescription}
           </p>
         </div>
 
-        {/* Baris Harga & Tombol Tambah Tactile */}
+        {/* Baris Harga & Tombol Tambah */}
         <div className="flex items-center justify-between pt-3 mt-auto">
           <div className="text-[15px] sm:text-[16px] tabular-nums font-bold" style={{ color: 'var(--primary)' }}>
             <PriceTag harga={item.price} />
           </div>
 
-          {/* Tombol Tambah Ala GoFood / GrabFood */}
+          {/* Tombol Tambah */}
           {!isViewOnly && isAvailable && (
             <button
               type="button"
@@ -133,11 +138,11 @@ export const MenuCard: React.FC<MenuCardProps> = ({
                 backgroundColor: 'var(--primary)',
                 color: '#ffffff',
               }}
-              aria-label={`Tambah ${item.name}`}
+              aria-label={`${t('add')} ${itemName}`}
               className="h-8 px-3 rounded-full text-xs font-bold flex items-center gap-1 shadow-sm hover:opacity-90 active:scale-95 transition-all flex-shrink-0"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span>Tambah</span>
+              <span>{t('add')}</span>
             </button>
           )}
         </div>

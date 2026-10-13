@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { MenuItem } from '../../types/menu';
 import { formatRupiah } from '../../utils/currency';
 import { LazyImage } from '../common/LazyImage';
+import { useLanguage } from '../../hooks/useLanguage';
 import { X, Plus, Minus, Check } from 'lucide-react';
 
 interface ItemDetailModalProps {
@@ -17,7 +18,6 @@ interface ItemDetailModalProps {
     unitPrice: number
   ) => void;
   isViewOnly?: boolean;
-  t?: (key: any) => string;
 }
 
 export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
@@ -27,6 +27,8 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   onAddToCart,
   isViewOnly = false,
 }) => {
+  const { lang, t } = useLanguage();
+
   // State untuk varian default
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
@@ -45,6 +47,9 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   const [notes, setNotes] = useState('');
 
   if (!isOpen || !item) return null;
+
+  const itemName = lang === 'en' && item.nameEn ? item.nameEn : item.name;
+  const itemDescription = lang === 'en' && item.descriptionEn ? item.descriptionEn : item.description;
 
   // Hitung unitPrice dengan penambahan harga varian & addons
   let unitPrice = item.price;
@@ -120,7 +125,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
           <div className="h-48 md:h-60 w-full relative bg-[var(--bg)]">
             <LazyImage
               src={item.image}
-              alt={item.name}
+              alt={itemName}
               width={640}
               height={260}
               containerClassName="w-full h-full object-cover"
@@ -129,7 +134,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              aria-label="Tutup jendela"
+              aria-label={t('closeModal')}
               className="absolute top-3 right-3 w-11 h-11 flex items-center justify-center text-white bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-colors z-10"
             >
               <X className="w-5 h-5 stroke-[1.5]" />
@@ -147,7 +152,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 style={{ color: 'var(--text)' }}
                 className="text-lg md:text-xl font-semibold leading-snug"
               >
-                {item.name}
+                {itemName}
               </h2>
               <div
                 style={{ color: 'var(--primary)' }}
@@ -161,55 +166,61 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
               style={{ color: 'var(--text-muted)' }}
               className="text-sm leading-[1.6] mt-2"
             >
-              {item.description}
+              {itemDescription}
             </p>
           </div>
 
           {/* Pilihan Varian */}
           {item.variants && item.variants.length > 0 && (
             <div className="space-y-4 pt-2 border-t border-[var(--border)]">
-              {item.variants.map((variant) => (
-                <div key={variant.name}>
-                  <label
-                    style={{ color: 'var(--text)' }}
-                    className="block text-xs font-semibold uppercase tracking-wider mb-2"
-                  >
-                    {variant.name}
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {variant.options.map((opt) => {
-                      const isSelected = selectedVariants[variant.name] === opt.name;
-                      return (
-                        <button
-                          key={opt.name}
-                          type="button"
-                          onClick={() => handleVariantChange(variant.name, opt.name)}
-                          style={{
-                            borderRadius: '8px',
-                            backgroundColor: isSelected
-                              ? 'var(--primary-light)'
-                              : 'var(--surface)',
-                            borderColor: isSelected
-                              ? 'var(--primary)'
-                              : 'var(--border)',
-                            color: isSelected
-                              ? 'var(--primary)'
-                              : 'var(--text)',
-                          }}
-                          className="min-h-[44px] px-3 py-2 border text-left text-xs font-medium transition-colors flex items-center justify-between"
-                        >
-                          <span className="truncate">{opt.name}</span>
-                          {opt.priceDelta ? (
-                            <span className="text-[11px] font-normal opacity-80 ml-1">
-                              +{formatRupiah(opt.priceDelta)}
-                            </span>
-                          ) : null}
-                        </button>
-                      );
-                    })}
+              {item.variants.map((variant) => {
+                const variantLabel = lang === 'en' && variant.nameEn ? variant.nameEn : variant.name;
+
+                return (
+                  <div key={variant.name}>
+                    <label
+                      style={{ color: 'var(--text)' }}
+                      className="block text-xs font-semibold uppercase tracking-wider mb-2"
+                    >
+                      {variantLabel}
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {variant.options.map((opt) => {
+                        const isSelected = selectedVariants[variant.name] === opt.name;
+                        const optLabel = lang === 'en' && opt.nameEn ? opt.nameEn : opt.name;
+
+                        return (
+                          <button
+                            key={opt.name}
+                            type="button"
+                            onClick={() => handleVariantChange(variant.name, opt.name)}
+                            style={{
+                              borderRadius: '8px',
+                              backgroundColor: isSelected
+                                ? 'var(--primary-light)'
+                                : 'var(--surface)',
+                              borderColor: isSelected
+                                ? 'var(--primary)'
+                                : 'var(--border)',
+                              color: isSelected
+                                ? 'var(--primary)'
+                                : 'var(--text)',
+                            }}
+                            className="min-h-[44px] px-3 py-2 border text-left text-xs font-medium transition-colors flex items-center justify-between"
+                          >
+                            <span className="truncate">{optLabel}</span>
+                            {opt.priceDelta ? (
+                              <span className="text-[11px] font-normal opacity-80 ml-1">
+                                +{formatRupiah(opt.priceDelta)}
+                              </span>
+                            ) : null}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -220,11 +231,13 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 style={{ color: 'var(--text)' }}
                 className="block text-xs font-semibold uppercase tracking-wider"
               >
-                Tambahan / Topping
+                {t('addonsTitle')}
               </label>
               <div className="space-y-2">
                 {item.addons.map((addon) => {
                   const isChecked = selectedAddons.includes(addon.name);
+                  const addonLabel = lang === 'en' && addon.nameEn ? addon.nameEn : addon.name;
+
                   return (
                     <button
                       key={addon.name}
@@ -254,7 +267,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                         >
                           {isChecked && <Check className="w-3 h-3 stroke-[2]" />}
                         </div>
-                        <span>{addon.name}</span>
+                        <span>{addonLabel}</span>
                       </div>
                       <span className="tabular-nums">+{formatRupiah(addon.price)}</span>
                     </button>
@@ -271,14 +284,14 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
               style={{ color: 'var(--text)' }}
               className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
             >
-              Catatan Pesanan
+              {t('itemNotesTitle')}
             </label>
             <input
               id="item-notes-input"
               type="text"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Contoh: Kurangi manis, es dipisah..."
+              placeholder={t('itemNotesPlaceholder')}
               style={{
                 backgroundColor: 'var(--surface)',
                 borderColor: 'var(--border)',
@@ -302,7 +315,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             <div className="w-full flex items-center justify-between">
               <div>
                 <p style={{ color: 'var(--text-muted)' }} className="text-xs">
-                  Katalog Menu Digital
+                  {t('viewOnlyBadge')}
                 </p>
                 <p style={{ color: 'var(--primary)' }} className="text-sm font-semibold tabular-nums">
                   {formatRupiah(unitPrice)}
@@ -319,7 +332,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 }}
                 className="px-6 text-sm font-medium transition-colors hover:bg-[var(--primary-hover)]"
               >
-                Tutup
+                {t('close')}
               </button>
             </div>
           ) : (
@@ -338,7 +351,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                   disabled={quantity <= 1}
-                  aria-label="Kurangi jumlah"
+                  aria-label={t('decreaseQuantity')}
                   style={{ color: 'var(--text)' }}
                   className="w-10 h-10 flex items-center justify-center disabled:opacity-30 transition-opacity"
                 >
@@ -353,7 +366,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => q + 1)}
-                  aria-label="Tambah jumlah"
+                  aria-label={t('increaseQuantity')}
                   style={{ color: 'var(--text)' }}
                   className="w-10 h-10 flex items-center justify-center transition-opacity"
                 >
@@ -371,7 +384,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 }}
                 className="flex-1 font-bold text-sm px-5 h-12 rounded-full flex items-center justify-between transition-all hover:opacity-90 active:scale-[0.98] shadow-sm"
               >
-                <span>Tambah ke Keranjang</span>
+                <span>{t('addToCart')}</span>
                 <span className="tabular-nums font-extrabold">{formatRupiah(totalPrice)}</span>
               </button>
             </>

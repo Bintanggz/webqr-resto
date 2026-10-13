@@ -1,19 +1,21 @@
 /**
- * Tipe data TypeScript untuk konfigurasi situs & restoran
+ * Tipe data TypeScript untuk konfigurasi situs & restoran (Mendukung Multi-Bahasa)
  */
 
 export interface PromoBanner {
   id: string;
   title: string;
+  titleEn?: string;
   description: string;
+  descriptionEn?: string;
   image?: string;
   isActive: boolean;
 }
 
 export interface OrderTypeConfig {
-  dineIn: { enabled: boolean; label: string; iconName?: string };
-  takeAway: { enabled: boolean; label: string; iconName?: string };
-  delivery: { enabled: boolean; label: string; iconName?: string };
+  dineIn: { enabled: boolean; label: string; labelEn?: string; iconName?: string };
+  takeAway: { enabled: boolean; label: string; labelEn?: string; iconName?: string };
+  delivery: { enabled: boolean; label: string; labelEn?: string; iconName?: string };
 }
 
 export interface SiteConfig {
@@ -21,10 +23,13 @@ export interface SiteConfig {
   restaurant: {
     name: string;
     tagline: string;
+    taglineEn?: string;
     logo: string;
     banner: string;
     address: string;
+    addressEn?: string;
     openingHours: string;
+    openingHoursEn?: string;
     mapsUrl: string;
     instagram: string;
   };
@@ -33,7 +38,9 @@ export interface SiteConfig {
   whatsapp: {
     number: string; // Format: 628xxx
     openingMessage: string;
+    openingMessageEn?: string;
     orderTemplate: string;
+    orderTemplateEn?: string;
   };
 
   // Tampilan & Tema Warna

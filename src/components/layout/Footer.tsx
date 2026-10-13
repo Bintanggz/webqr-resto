@@ -1,14 +1,20 @@
 import React from 'react';
 import { siteConfig } from '../../config/site.config';
+import { useLanguage } from '../../hooks/useLanguage';
 import { MapPin, Clock, ExternalLink, Printer } from 'lucide-react';
 
 interface FooterProps {
-  t: (key: any) => string;
+  t?: (key: any) => string;
   onOpenQr?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ t, onOpenQr }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenQr }) => {
   const { restaurant } = siteConfig;
+  const { lang, t } = useLanguage();
+
+  const currentTagline = lang === 'en' && restaurant.taglineEn ? restaurant.taglineEn : restaurant.tagline;
+  const currentAddress = lang === 'en' && restaurant.addressEn ? restaurant.addressEn : restaurant.address;
+  const currentHours = lang === 'en' && restaurant.openingHoursEn ? restaurant.openingHoursEn : restaurant.openingHours;
 
   return (
     <footer
@@ -32,9 +38,9 @@ export const Footer: React.FC<FooterProps> = ({ t, onOpenQr }) => {
             >
               {restaurant.name}
             </h3>
-            {restaurant.tagline && (
+            {currentTagline && (
               <p className="text-xs mt-1 leading-relaxed opacity-90">
-                {restaurant.tagline}
+                {currentTagline}
               </p>
             )}
           </div>
@@ -43,7 +49,7 @@ export const Footer: React.FC<FooterProps> = ({ t, onOpenQr }) => {
           <div className="flex flex-col gap-2">
             <div className="flex items-start gap-1.5">
               <MapPin className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 stroke-[1.5]" style={{ color: 'var(--primary)' }} />
-              <span className="leading-relaxed">{restaurant.address}</span>
+              <span className="leading-relaxed">{currentAddress}</span>
             </div>
 
             {restaurant.mapsUrl && (
@@ -56,7 +62,7 @@ export const Footer: React.FC<FooterProps> = ({ t, onOpenQr }) => {
                 }}
                 className="inline-flex items-center gap-1 font-medium text-xs hover:underline mt-0.5"
               >
-                <span>Buka Google Maps</span>
+                <span>{t('openGoogleMaps')}</span>
                 <ExternalLink className="w-3 h-3 stroke-[1.5]" />
               </a>
             )}
@@ -67,7 +73,7 @@ export const Footer: React.FC<FooterProps> = ({ t, onOpenQr }) => {
             <div className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 stroke-[1.5]" style={{ color: 'var(--primary)' }} />
               <span>
-                {t('footerHours')}: {restaurant.openingHours}
+                {t('footerHours')}: {currentHours}
               </span>
             </div>
 
@@ -85,7 +91,7 @@ export const Footer: React.FC<FooterProps> = ({ t, onOpenQr }) => {
           </div>
         </div>
 
-        {/* Akses Cetak QR Meja (Minimalis, Ikon Printer stroke 1.5, tanpa emoji) */}
+        {/* Akses Cetak QR Meja */}
         {onOpenQr && (
           <div className="pt-6 mt-6 border-t flex justify-center" style={{ borderColor: 'var(--border)' }}>
             <button
@@ -100,7 +106,7 @@ export const Footer: React.FC<FooterProps> = ({ t, onOpenQr }) => {
               className="px-4 py-2 border inline-flex items-center gap-2 font-medium text-xs hover:border-[var(--primary)] transition-colors"
             >
               <Printer className="w-3.5 h-3.5 stroke-[1.5]" />
-              <span>Cetak QR Meja Restoran (/qr)</span>
+              <span>{t('printQrCode')}</span>
             </button>
           </div>
         )}

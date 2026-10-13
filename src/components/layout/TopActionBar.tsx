@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { siteConfig } from '../../config/site.config';
 import { Share2, MessageCircle, Globe, Check } from 'lucide-react';
-import type { LanguageCode } from '../../hooks/useLanguage';
+import type { LanguageCode, TranslationKey } from '../../hooks/useLanguage';
 
 interface TopActionBarProps {
   currentLang: LanguageCode;
   onToggleLang: (lang: LanguageCode) => void;
-  t: (key: any) => string;
+  t: (key: TranslationKey, replacements?: Record<string, string | number>) => string;
 }
 
 export const TopActionBar: React.FC<TopActionBarProps> = ({
@@ -52,7 +52,7 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
   const handleContactWhatsApp = () => {
     const cleanNumber = whatsapp.number.replace(/\D/g, '');
     const message = encodeURIComponent(
-      `Halo ${restaurant.name}, saya ingin bertanya perihal menu dan layanan meja.`
+      t('contactWAPrompt', { name: restaurant.name })
     );
     window.open(`https://wa.me/${cleanNumber}?text=${message}`, '_blank');
   };

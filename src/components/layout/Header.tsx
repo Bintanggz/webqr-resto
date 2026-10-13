@@ -1,6 +1,7 @@
 import React from 'react';
 import { siteConfig } from '../../config/site.config';
 import { useIsOpen } from '../../hooks/useIsOpen';
+import { useLanguage } from '../../hooks/useLanguage';
 import { Clock, MapPin, ExternalLink, Star, QrCode } from 'lucide-react';
 
 interface HeaderProps {
@@ -10,6 +11,11 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
   const { restaurant, features } = siteConfig;
   const isOpen = useIsOpen(restaurant.openingHours);
+  const { lang, t } = useLanguage();
+
+  const currentTagline = lang === 'en' && restaurant.taglineEn ? restaurant.taglineEn : restaurant.tagline;
+  const currentAddress = lang === 'en' && restaurant.addressEn ? restaurant.addressEn : restaurant.address;
+  const currentHours = lang === 'en' && restaurant.openingHoursEn ? restaurant.openingHoursEn : restaurant.openingHours;
 
   return (
     <header
@@ -37,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
         {features.tableNumber && nomorMeja && (
           <div className="absolute top-4 right-4 backdrop-blur-md bg-white/95 text-neutral-900 border border-white/40 px-3.5 py-1.5 rounded-full shadow-lg text-xs font-bold flex items-center gap-1.5">
             <QrCode className="w-3.5 h-3.5 text-[var(--primary)] stroke-[2]" />
-            <span>Meja #{nomorMeja}</span>
+            <span>{t('tablePrefix', { number: nomorMeja })}</span>
           </div>
         )}
 
@@ -49,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
             }}
             className="w-2 h-2 rounded-full animate-pulse"
           />
-          <span>{isOpen ? 'Buka Sekarang' : 'Sedang Tutup'}</span>
+          <span>{isOpen ? t('openNow') : t('closedNow')}</span>
         </div>
       </div>
 
@@ -96,18 +102,18 @@ export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
               <span className="inline-flex items-center gap-1 text-amber-500 font-bold bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-full border border-amber-200/50">
                 <Star className="w-3.5 h-3.5 fill-amber-500 stroke-amber-500" />
                 <span>4.9</span>
-                <span className="text-neutral-400 font-normal">(500+ rating)</span>
+                <span className="text-neutral-400 font-normal">{t('ratingCount', { count: 500 })}</span>
               </span>
               <span>•</span>
-              <span>Menu Resmi Dine-In</span>
+              <span>{t('officialDineIn')}</span>
             </div>
 
-            {restaurant.tagline && (
+            {currentTagline && (
               <p
                 style={{ color: 'var(--text-muted)' }}
                 className="text-xs sm:text-sm mt-2 line-clamp-2 leading-relaxed"
               >
-                {restaurant.tagline}
+                {currentTagline}
               </p>
             )}
           </div>
@@ -122,13 +128,13 @@ export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
             {/* Jam Buka */}
             <div className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 stroke-[1.5] text-[var(--primary)]" />
-              <span>{restaurant.openingHours}</span>
+              <span>{currentHours}</span>
             </div>
 
             {/* Alamat */}
             <div className="flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 stroke-[1.5] text-[var(--primary)]" />
-              <span className="line-clamp-1">{restaurant.address}</span>
+              <span className="line-clamp-1">{currentAddress}</span>
             </div>
           </div>
 
@@ -141,7 +147,7 @@ export const Header: React.FC<HeaderProps> = ({ nomorMeja }) => {
               style={{ color: 'var(--primary)' }}
               className="inline-flex items-center gap-1 hover:underline font-semibold text-xs ml-auto"
             >
-              <span>Petunjuk Arah</span>
+              <span>{t('getDirections')}</span>
               <ExternalLink className="w-3 h-3 stroke-[1.5]" />
             </a>
           )}

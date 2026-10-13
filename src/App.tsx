@@ -166,7 +166,7 @@ export function App() {
           >
             <div className="flex flex-col items-center gap-2">
               <Printer className="w-8 h-8 stroke-[1.5]" style={{ color: 'var(--primary)' }} />
-              <span>Memuat Generator QR Meja...</span>
+              <span>{t('loadingQr')}</span>
             </div>
           </div>
         }
@@ -265,7 +265,7 @@ export function App() {
                 style={{ color: 'var(--text)' }}
                 className="text-sm font-semibold uppercase tracking-wider"
               >
-                {t('searchPlaceholder')}
+                {t('searchResults')}
               </h2>
               <span
                 style={{ color: 'var(--text-muted)' }}
@@ -325,7 +325,7 @@ export function App() {
                         }}
                         className="text-xl sm:text-2xl font-bold tracking-tight leading-tight"
                       >
-                        {cat.name}
+                        {lang === 'en' && cat.nameEn ? cat.nameEn : cat.name}
                       </h2>
                     </div>
                     <span

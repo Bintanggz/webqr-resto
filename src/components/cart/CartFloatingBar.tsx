@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import { formatRupiah } from '../../utils/currency';
+import { useLanguage } from '../../hooks/useLanguage';
 
 interface CartFloatingBarProps {
   totalItems: number;
@@ -13,11 +14,13 @@ export const CartFloatingBar: React.FC<CartFloatingBarProps> = ({
   totalHarga,
   onClick,
 }) => {
+  const { t } = useLanguage();
+
   if (totalItems === 0) return null;
 
   return (
     <aside
-      aria-label="Ringkasan Keranjang"
+      aria-label={t('cartSummary')}
       className="fixed bottom-4 sm:bottom-6 left-0 right-0 z-40 px-4 sm:px-6 max-w-lg mx-auto pointer-events-none"
     >
       <button
@@ -37,7 +40,7 @@ export const CartFloatingBar: React.FC<CartFloatingBarProps> = ({
           </div>
           <div className="text-left">
             <p className="text-[11px] uppercase tracking-wider font-semibold opacity-90 leading-none">
-              {totalItems} Menu Dipilih
+              {t('menuSelected', { count: totalItems })}
             </p>
             <p className="text-[16px] font-extrabold tabular-nums mt-0.5 leading-tight">
               {formatRupiah(totalHarga)}
@@ -46,7 +49,7 @@ export const CartFloatingBar: React.FC<CartFloatingBarProps> = ({
         </div>
 
         <div className="flex items-center gap-1.5 text-xs font-bold bg-white text-neutral-900 px-3.5 py-1.5 rounded-full shadow-sm">
-          <span>Lihat Pesanan</span>
+          <span>{t('viewOrder')}</span>
           <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
         </div>
       </button>

@@ -4,6 +4,7 @@ import { siteConfig } from '../../config/site.config';
 import { formatRupiah } from '../../utils/currency';
 import { buildWhatsAppOrderUrl } from '../../utils/whatsapp';
 import { LazyImage } from '../common/LazyImage';
+import { useLanguage } from '../../hooks/useLanguage';
 import {
   X,
   Trash2,
@@ -46,7 +47,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   initialTableNumber,
   isTableLocked,
 }) => {
+  const { lang, t } = useLanguage();
   const { orderTypes } = siteConfig;
+
   const availableOrderTypes: Array<{
     id: 'dineIn' | 'takeAway' | 'delivery';
     label: string;
@@ -54,35 +57,53 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   }> = [];
 
   if (orderTypes.dineIn.enabled) {
+    const label =
+      lang === 'en' && orderTypes.dineIn.labelEn
+        ? orderTypes.dineIn.labelEn
+        : lang === 'en'
+        ? t('orderTypeDineIn')
+        : orderTypes.dineIn.label;
     availableOrderTypes.push({
       id: 'dineIn',
-      label: orderTypes.dineIn.label,
+      label,
       icon: UtensilsCrossed,
     });
   }
   if (orderTypes.takeAway.enabled) {
+    const label =
+      lang === 'en' && orderTypes.takeAway.labelEn
+        ? orderTypes.takeAway.labelEn
+        : lang === 'en'
+        ? t('orderTypeTakeAway')
+        : orderTypes.takeAway.label;
     availableOrderTypes.push({
       id: 'takeAway',
-      label: orderTypes.takeAway.label,
+      label,
       icon: BagIcon,
     });
   }
   if (orderTypes.delivery.enabled) {
+    const label =
+      lang === 'en' && orderTypes.delivery.labelEn
+        ? orderTypes.delivery.labelEn
+        : lang === 'en'
+        ? t('orderTypeDelivery')
+        : orderTypes.delivery.label;
     availableOrderTypes.push({
       id: 'delivery',
-      label: orderTypes.delivery.label,
+      label,
       icon: Bike,
     });
   }
 
-  const [customerInfo, setCustomerInfo] = useState<CustomerOrderInfo>({
+  const [customerInfo, setCustomerInfo] = useState<CustomerOrderInfo>(() => ({
     namaPelanggan: '',
     tipePesanan: availableOrderTypes[0]?.id || 'dineIn',
     tipePesananLabel: availableOrderTypes[0]?.label || 'Dine In',
     nomorMeja: initialTableNumber || '',
     alamat: '',
     catatanUmum: '',
-  });
+  }));
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
@@ -92,12 +113,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleCheckoutWhatsApp = () => {
     if (items.length === 0) {
-      setErrorMessage('Keranjang belanja Anda masih kosong.');
+      setErrorMessage(t('errCartEmpty'));
       return;
     }
 
     if (!customerInfo.namaPelanggan.trim()) {
-      setErrorMessage('Harap isi Nama Pemesan terlebih dahulu.');
+      setErrorMessage(t('errNameRequired'));
       return;
     }
 
@@ -106,7 +127,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       siteConfig.features.tableNumber &&
       !customerInfo.nomorMeja.trim()
     ) {
-      setErrorMessage('Harap isi Nomor Meja Anda.');
+      setErrorMessage(t('errTableRequired'));
       return;
     }
 
@@ -114,19 +135,33 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       customerInfo.tipePesanan === 'delivery' &&
       !customerInfo.alamat?.trim()
     ) {
-      setErrorMessage('Harap cantumkan Alamat Lengkap untuk pengantaran.');
+      setErrorMessage(t('errAddressRequired'));
       return;
     }
 
     setErrorMessage(null);
 
+    const activeOrderType = availableOrderTypes.find(
+      (o) => o.id === customerInfo.tipePesanan
+    );
+    const orderInfoWithCurrentLabel: CustomerOrderInfo = {
+      ...customerInfo,
+      tipePesananLabel: activeOrderType ? activeOrderType.label : customerInfo.tipePesananLabel,
+    };
+
+    const template =
+      lang === 'en' && siteConfig.whatsapp.orderTemplateEn
+        ? siteConfig.whatsapp.orderTemplateEn
+        : siteConfig.whatsapp.orderTemplate;
+
     const waUrl = buildWhatsAppOrderUrl(
       siteConfig.whatsapp.number,
       siteConfig.restaurant.name,
       items,
-      customerInfo,
+      orderInfoWithCurrentLabel,
       totalHarga,
-      siteConfig.whatsapp.orderTemplate
+      template,
+      lang
     );
 
     window.open(waUrl, '_blank', 'noopener,noreferrer');
@@ -189,13 +224,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 style={{ color: 'var(--text)' }}
                 className="text-base font-semibold leading-none"
               >
-                Keranjang Pesanan
+                {t('cartTitle')}
               </h2>
               <p
                 style={{ color: 'var(--text-muted)' }}
                 className="text-xs mt-1"
               >
-                {totalItems} item dipilih
+                {t('itemsSelected', { count: totalItems })}
               </p>
             </div>
           </div>
@@ -205,12 +240,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  if (confirm('Kosongkan semua pesanan di keranjang?')) {
+                  if (confirm(t('clearCartConfirm'))) {
                     onClearCart();
                   }
                 }}
-                title="Kosongkan keranjang"
-                aria-label="Kosongkan keranjang"
+                title={t('clearCart')}
+                aria-label={t('clearCart')}
                 style={{ color: 'var(--text-muted)' }}
                 className="w-9 h-9 flex items-center justify-center hover:text-[var(--color-danger)] transition-colors"
               >
@@ -220,7 +255,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <button
               type="button"
               onClick={onClose}
-              aria-label="Tutup keranjang"
+              aria-label={t('closeCart')}
               style={{ color: 'var(--text-muted)' }}
               className="w-9 h-9 flex items-center justify-center hover:text-[var(--text)] transition-colors"
             >
@@ -249,7 +284,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <button
                 type="button"
                 onClick={() => setErrorMessage(null)}
-                aria-label="Tutup pesan error"
+                aria-label={t('close')}
                 className="p-1 opacity-70 hover:opacity-100"
               >
                 <X className="w-3.5 h-3.5 stroke-[1.5]" />
@@ -273,13 +308,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 style={{ color: 'var(--text)' }}
                 className="font-semibold text-base"
               >
-                Keranjang Masih Kosong
+                {t('cartEmpty')}
               </h3>
               <p
                 style={{ color: 'var(--text-muted)' }}
                 className="text-xs mt-1 max-w-xs mx-auto leading-relaxed"
               >
-                Silakan pilih hidangan atau minuman favorit Anda untuk memesan.
+                {t('cartEmptyDesc')}
               </p>
               <button
                 type="button"
@@ -292,7 +327,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 }}
                 className="mt-6 px-6 text-sm font-medium transition-colors hover:bg-[var(--primary-hover)]"
               >
-                Mulai Pilih Menu
+                {t('startOrder')}
               </button>
             </div>
           ) : (
@@ -303,12 +338,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   style={{ color: 'var(--text-muted)' }}
                   className="text-xs font-semibold uppercase tracking-wider"
                 >
-                  Menu Yang Dipesan
+                  {t('orderedItems')}
                 </p>
 
                 {items.map((item) => {
                   const variantKeys = Object.keys(item.varianTerpilih || {});
                   const isEditingNote = editingNoteId === item.id;
+                  const itemName =
+                    lang === 'en' && item.menuItem.nameEn
+                      ? item.menuItem.nameEn
+                      : item.menuItem.name;
 
                   return (
                     <div
@@ -331,7 +370,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         >
                           <LazyImage
                             src={item.menuItem.image}
-                            alt={item.menuItem.name}
+                            alt={itemName}
                             containerClassName="w-full h-full object-cover"
                           />
                         </div>
@@ -342,7 +381,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                             style={{ color: 'var(--text)' }}
                             className="font-medium text-sm leading-snug line-clamp-1"
                           >
-                            {item.menuItem.name}
+                            {itemName}
                           </h4>
 
                           {/* Detail Varian */}
@@ -363,7 +402,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                               style={{ color: 'var(--text-muted)' }}
                               className="text-xs italic mt-1 bg-[var(--surface)] px-2 py-0.5 rounded border border-[var(--border)] inline-block"
                             >
-                              Catatan: {item.catatan}
+                              {t('notesLabel')} {item.catatan}
                             </p>
                           )}
 
@@ -384,7 +423,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                             type="text"
                             value={tempNoteText}
                             onChange={(e) => setTempNoteText(e.target.value)}
-                            placeholder="Tulis catatan (misal: jangan pedas)..."
+                            placeholder={t('notesInputPlaceholder')}
                             style={{
                               backgroundColor: 'var(--surface)',
                               borderColor: 'var(--border)',
@@ -404,7 +443,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                             }}
                             className="px-3 py-1 text-xs font-medium"
                           >
-                            Simpan
+                            {t('save')}
                           </button>
                         </div>
                       ) : null}
@@ -422,7 +461,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                             className="text-xs hover:text-[var(--text)] flex items-center gap-1"
                           >
                             <FileText className="w-3.5 h-3.5 stroke-[1.5]" />
-                            <span>{item.catatan ? 'Ubah Catatan' : '+ Catatan'}</span>
+                            <span>{item.catatan ? t('editNotes') : t('addNotes')}</span>
                           </button>
                         )}
 
@@ -443,7 +482,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                               color: 'var(--text)',
                               borderRadius: '6px',
                             }}
-                            aria-label="Kurangi jumlah"
+                            aria-label={t('decreaseQuantity')}
                             className="w-7 h-7 border flex items-center justify-center hover:opacity-80 transition-opacity"
                           >
                             {item.kuantitas === 1 ? (
@@ -469,7 +508,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                               color: '#ffffff',
                               borderRadius: '6px',
                             }}
-                            aria-label="Tambah jumlah"
+                            aria-label={t('increaseQuantity')}
                             className="w-7 h-7 flex items-center justify-center hover:opacity-90 transition-opacity"
                           >
                             <Plus className="w-3.5 h-3.5 stroke-[1.5]" />
@@ -494,7 +533,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   style={{ color: 'var(--text-muted)' }}
                   className="text-xs font-semibold uppercase tracking-wider"
                 >
-                  Informasi Pemesan
+                  {t('customerInfo')}
                 </p>
 
                 {/* Pilihan Tipe Pesanan */}
@@ -504,7 +543,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       style={{ color: 'var(--text)' }}
                       className="block text-xs font-medium mb-1.5"
                     >
-                      Tipe Pesanan
+                      {t('orderType')}
                     </label>
                     <div className="grid grid-cols-3 gap-2">
                       {availableOrderTypes.map((type) => {
@@ -549,7 +588,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     style={{ color: 'var(--text)' }}
                     className="block text-xs font-medium mb-1"
                   >
-                    Nama Pemesan <span className="text-[var(--color-danger)]">*</span>
+                    {t('customerName')} <span className="text-[var(--color-danger)]">*</span>
                   </label>
                   <input
                     id="customer-name"
@@ -561,7 +600,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         namaPelanggan: e.target.value,
                       }))
                     }
-                    placeholder="Contoh: Budi Santoso"
+                    placeholder={t('customerNamePlaceholder')}
                     style={{
                       backgroundColor: 'var(--surface)',
                       borderColor: 'var(--border)',
@@ -580,7 +619,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       style={{ color: 'var(--text)' }}
                       className="block text-xs font-medium mb-1"
                     >
-                      Nomor Meja <span className="text-[var(--color-danger)]">*</span>
+                      {t('tableNumber')} <span className="text-[var(--color-danger)]">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -594,7 +633,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                             nomorMeja: e.target.value,
                           }))
                         }
-                        placeholder="Contoh: 12"
+                        placeholder={t('tableNumberPlaceholder')}
                         style={{
                           backgroundColor: isTableLocked
                             ? 'var(--bg)'
@@ -611,7 +650,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <div
                           style={{ color: 'var(--text-muted)' }}
                           className="absolute right-3 top-1/2 -translate-y-1/2"
-                          title="Terkunci otomatis dari QR Code Meja"
+                          title={t('tableLockedTip')}
                         >
                           <Lock className="w-3.5 h-3.5 stroke-[1.5]" />
                         </div>
@@ -628,7 +667,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       style={{ color: 'var(--text)' }}
                       className="block text-xs font-medium mb-1"
                     >
-                      Alamat Pengantaran <span className="text-[var(--color-danger)]">*</span>
+                      {t('deliveryAddress')} <span className="text-[var(--color-danger)]">*</span>
                     </label>
                     <textarea
                       id="delivery-address"
@@ -640,7 +679,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           alamat: e.target.value,
                         }))
                       }
-                      placeholder="Masukkan alamat lengkap & patokan..."
+                      placeholder={t('deliveryAddressPlaceholder')}
                       style={{
                         backgroundColor: 'var(--surface)',
                         borderColor: 'var(--border)',
@@ -659,7 +698,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     style={{ color: 'var(--text)' }}
                     className="block text-xs font-medium mb-1"
                   >
-                    Catatan Pesanan (Opsional)
+                    {t('generalNotes')}
                   </label>
                   <input
                     id="general-notes"
@@ -671,7 +710,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         catatanUmum: e.target.value,
                       }))
                     }
-                    placeholder="Contoh: Mohon sertakan sendok & tisu..."
+                    placeholder={t('generalNotesPlaceholder')}
                     style={{
                       backgroundColor: 'var(--surface)',
                       borderColor: 'var(--border)',
@@ -702,13 +741,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   style={{ color: 'var(--text-muted)' }}
                   className="text-xs font-medium"
                 >
-                  Total Pembayaran
+                  {t('totalPayment')}
                 </p>
                 <p
                   style={{ color: 'var(--text-muted)' }}
                   className="text-[11px]"
                 >
-                  ({totalItems} menu)
+                  {t('totalItemsCount', { count: totalItems })}
                 </p>
               </div>
               <p
@@ -730,14 +769,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               className="w-full font-bold text-sm px-4 h-12 rounded-full flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.99] shadow-md"
             >
               <Send className="w-4 h-4 stroke-[2]" />
-              <span>Kirim Pesanan via WhatsApp</span>
+              <span>{t('orderViaWA')}</span>
             </button>
 
             <p
               style={{ color: 'var(--text-muted)' }}
               className="text-center text-[11px] leading-tight"
             >
-              Pesanan akan otomatis terformat rapi dan dikirim ke nomor WhatsApp resmi restoran.
+              {t('orderWAFootnote')}
             </p>
           </div>
         )}
