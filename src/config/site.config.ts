@@ -12,7 +12,7 @@ export const siteConfig: SiteConfig = {
     instagram: "kopisenja_artisan",
   },
   whatsapp: {
-    number: "6281234567890",
+    number: "6285601796561",
     openingMessage: "Halo Kopi Senja, saya ingin order kopi & pastry berikut:",
     orderTemplate: "Pesanan akan disiapkan oleh barista kami. Terima kasih! ☕",
   },
