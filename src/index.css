@@ -3,26 +3,26 @@
 @layer base {
   :root {
     /* ─── Design Tokens (Warm Classic Default) ─── */
-    --bg: #FAF6F0;
+    --bg: #F8F9FA;
     --surface: #FFFFFF;
-    --text: #2B2118;
-    --text-muted: #7A6A5C;
-    --primary: #8C3B1F;
-    --primary-hover: #732F18;
-    --primary-light: rgba(140, 59, 31, 0.1);
+    --text: #18181B;
+    --text-muted: #71717A;
+    --primary: #9A3412;
+    --primary-hover: #7C2D12;
+    --primary-light: rgba(154, 52, 18, 0.08);
     --primary-text: #FFFFFF;
-    --accent: #C8963E;
-    --border: #E8DFD3;
-    --radius: 12px;
-    --shadow-sm: 0 1px 3px rgba(43, 33, 24, 0.05);
+    --accent: #EA580C;
+    --border: #E4E4E7;
+    --radius: 16px;
+    --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.05), 0 1px 3px -1px rgba(0, 0, 0, 0.03);
 
     /* ─── Tipografi Google Fonts ─── */
-    --font-heading: 'Cormorant Garamond', Georgia, serif;
-    --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+    --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 
     /* ─── Status & Third-Party ─── */
-    --color-success: #2D6A4F;
-    --color-danger: #B91C1C;
+    --color-success: #16A34A;
+    --color-danger: #DC2626;
     --color-whatsapp: #25D366;
     --color-instagram: #E1306C;
 

@@ -323,7 +323,7 @@ export function App() {
                           color: 'var(--text)',
                           fontFamily: 'var(--font-heading)',
                         }}
-                        className="text-[24px] lg:text-[28px] font-semibold leading-tight"
+                        className="text-xl sm:text-2xl font-bold tracking-tight leading-tight"
                       >
                         {cat.name}
                       </h2>
@@ -333,7 +333,7 @@ export function App() {
                         backgroundColor: 'var(--primary-light)',
                         color: 'var(--primary)',
                       }}
-                      className="text-xs font-medium px-2.5 py-0.5 rounded-[4px]"
+                      className="text-xs font-bold px-3 py-1 rounded-full"
                     >
                       {t('menuCount', { count: categoryItems.length })}
                     </span>

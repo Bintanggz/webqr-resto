@@ -28,69 +28,80 @@ export const MenuCard: React.FC<MenuCardProps> = ({
         borderRadius: 'var(--radius)',
         boxShadow: 'var(--shadow-sm)',
       }}
-      className={`border p-4 transition-all select-none flex flex-row items-center justify-between gap-4 lg:flex-col lg:items-stretch lg:justify-start ${
+      className={`group border transition-all duration-300 select-none flex flex-row items-center justify-between gap-3 p-3.5 sm:p-4 lg:flex-col lg:items-stretch lg:justify-start lg:p-0 overflow-hidden ${
         isAvailable
-          ? 'hover:border-[var(--primary)] cursor-pointer active:scale-[0.99]'
+          ? 'hover:border-neutral-300 dark:hover:border-neutral-600 hover:shadow-md cursor-pointer active:scale-[0.99]'
           : 'opacity-60 cursor-not-allowed'
       }`}
     >
-      {/* Di Mobile/Tablet: Teks di Kiri | Di Desktop: Teks di Bawah Foto */}
-      <div className="flex-1 flex flex-col justify-between min-w-0 order-1 lg:order-2 lg:mt-3">
+      {/* 1. Image Container (Di Desktop di Atas, Di Mobile di Kanan) */}
+      <div
+        style={{
+          borderRadius: 'calc(var(--radius) - 4px)',
+          backgroundColor: 'var(--bg)',
+        }}
+        className="w-24 h-24 sm:w-28 sm:h-28 lg:w-full lg:h-48 overflow-hidden flex-shrink-0 relative order-2 lg:order-1 lg:rounded-none"
+      >
+        <div className="w-full h-full transform group-hover:scale-105 transition-transform duration-500 ease-out">
+          <LazyImage
+            src={item.image}
+            alt={item.name}
+            width={300}
+            height={225}
+            containerClassName="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Floating Badges on Image (Ala GoFood / GrabFood) */}
+        <div className="absolute top-2 left-2 flex flex-col gap-1 items-start z-10">
+          {showPopular && isAvailable && (
+            <span className="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm flex items-center gap-0.5 tracking-tight">
+              🔥 Terlaris
+            </span>
+          )}
+          {item.isNew && isAvailable && (
+            <span className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm tracking-tight">
+              ✨ Baru
+            </span>
+          )}
+        </div>
+
+        {/* Overlay jika menu Habis */}
+        {!isAvailable && (
+          <div
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.65)' }}
+            className="absolute inset-0 flex items-center justify-center p-1 backdrop-blur-[2px] z-20"
+          >
+            <span className="bg-rose-600 text-white text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow">
+              Habis
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* 2. Content Info (Di Mobile di Kiri, Di Desktop di Bawah Foto) */}
+      <div className="flex-1 flex flex-col justify-between min-w-0 order-1 lg:order-2 lg:p-4">
         <div>
-          {/* Baris Nama & Badge Elegan */}
+          {/* Baris Nama & Tag Khusus */}
           <div className="flex items-center gap-1.5 flex-wrap">
             <h3
               style={{ color: 'var(--text)' }}
-              className="text-[16px] sm:text-[17px] font-medium leading-snug line-clamp-1"
+              className="text-[15px] sm:text-[16px] font-bold leading-snug line-clamp-1 group-hover:text-[var(--primary)] transition-colors"
             >
               {item.name}
             </h3>
 
-            {/* Badge Terlaris (huruf kecil, latar 10% primary, teks primary) */}
-            {showPopular && isAvailable && (
-              <span
-                style={{
-                  backgroundColor: 'var(--primary-light)',
-                  color: 'var(--primary)',
-                }}
-                className="text-[11px] font-medium px-2 py-0.5 rounded-[4px] lowercase tracking-wide"
-              >
-                terlaris
-              </span>
-            )}
-
-            {/* Badge Baru (huruf kecil, latar 10% primary, teks primary) */}
-            {item.isNew && isAvailable && (
-              <span
-                style={{
-                  backgroundColor: 'var(--primary-light)',
-                  color: 'var(--primary)',
-                }}
-                className="text-[11px] font-medium px-2 py-0.5 rounded-[4px] lowercase tracking-wide"
-              >
-                baru
-              </span>
-            )}
-
-            {/* Ikon Pedas (Lucide Flame stroke 1.5, tanpa emoji) */}
+            {/* Ikon Pedas */}
             {item.tags?.includes('pedas') && isAvailable && (
-              <span
-                title="Pedas"
-                style={{ color: 'var(--primary)' }}
-                className="inline-flex items-center"
-              >
-                <Flame className="w-3.5 h-3.5 stroke-[1.5]" />
+              <span title="Pedas" className="text-rose-500 inline-flex items-center">
+                <Flame className="w-3.5 h-3.5 stroke-[2]" />
               </span>
             )}
 
-            {/* Ikon Vegetarian (Lucide Leaf stroke 1.5, tanpa emoji) */}
+            {/* Ikon Vegetarian */}
             {item.tags?.includes('vegetarian') && isAvailable && (
-              <span
-                title="Vegetarian"
-                style={{ color: 'var(--color-success)' }}
-                className="inline-flex items-center"
-              >
-                <Leaf className="w-3.5 h-3.5 stroke-[1.5]" />
+              <span title="Vegetarian" className="text-emerald-600 inline-flex items-center">
+                <Leaf className="w-3.5 h-3.5 stroke-[2]" />
               </span>
             )}
           </div>
@@ -98,19 +109,19 @@ export const MenuCard: React.FC<MenuCardProps> = ({
           {/* Deskripsi Menu */}
           <p
             style={{ color: 'var(--text-muted)' }}
-            className="text-[14px] leading-[1.6] line-clamp-2 mt-1"
+            className="text-[13px] leading-[1.5] line-clamp-2 mt-1"
           >
             {item.description}
           </p>
         </div>
 
-        {/* Baris Harga & Aksi */}
-        <div className="flex items-center justify-between pt-2.5 mt-auto">
-          <div className="text-[15px] tabular-nums font-semibold" style={{ color: 'var(--primary)' }}>
+        {/* Baris Harga & Tombol Tambah Tactile */}
+        <div className="flex items-center justify-between pt-3 mt-auto">
+          <div className="text-[15px] sm:text-[16px] tabular-nums font-bold" style={{ color: 'var(--primary)' }}>
             <PriceTag harga={item.price} />
           </div>
 
-          {/* Tombol Tambah / Aksi Cepat */}
+          {/* Tombol Tambah Ala GoFood / GrabFood */}
           {!isViewOnly && isAvailable && (
             <button
               type="button"
@@ -119,52 +130,17 @@ export const MenuCard: React.FC<MenuCardProps> = ({
                 onSelect(item);
               }}
               style={{
-                backgroundColor: 'var(--primary-light)',
-                color: 'var(--primary)',
-                borderRadius: '8px',
+                backgroundColor: 'var(--primary)',
+                color: '#ffffff',
               }}
               aria-label={`Tambah ${item.name}`}
-              className="w-8 h-8 flex items-center justify-center hover:bg-[var(--primary)] hover:text-white transition-colors"
+              className="h-8 px-3 rounded-full text-xs font-bold flex items-center gap-1 shadow-sm hover:opacity-90 active:scale-95 transition-all flex-shrink-0"
             >
-              <Plus className="w-4 h-4 stroke-[1.5]" />
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Tambah</span>
             </button>
           )}
         </div>
-      </div>
-
-      {/* Di Mobile/Tablet: Foto di Kanan | Di Desktop: Foto di Atas Teks */}
-      <div
-        style={{
-          borderRadius: 'var(--radius)',
-          backgroundColor: 'var(--bg)',
-        }}
-        className="w-24 h-24 sm:w-28 sm:h-28 lg:w-full lg:h-44 overflow-hidden flex-shrink-0 relative order-2 lg:order-1"
-      >
-        <LazyImage
-          src={item.image}
-          alt={item.name}
-          width={300}
-          height={225}
-          containerClassName="w-full h-full object-cover"
-        />
-
-        {/* Overlay jika menu Habis */}
-        {!isAvailable && (
-          <div
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0.55)' }}
-            className="absolute inset-0 flex items-center justify-center p-1 backdrop-blur-[1px]"
-          >
-            <span
-              style={{
-                backgroundColor: 'var(--color-danger)',
-                color: '#ffffff',
-              }}
-              className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-[4px]"
-            >
-              Habis
-            </span>
-          </div>
-        )}
       </div>
     </article>
   );

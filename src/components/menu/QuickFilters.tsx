@@ -40,12 +40,13 @@ export const QuickFilters: React.FC<QuickFiltersProps> = ({
               type="button"
               onClick={() => onSelectFilter(f.id)}
               style={{
-                borderRadius: '8px',
                 backgroundColor: isActive ? 'var(--primary)' : 'var(--surface)',
                 borderColor: isActive ? 'var(--primary)' : 'var(--border)',
                 color: isActive ? '#ffffff' : 'var(--text-muted)',
               }}
-              className="min-h-[44px] px-3.5 text-xs font-medium border whitespace-nowrap transition-colors flex items-center justify-center hover:text-[var(--text)]"
+              className={`h-9 px-3.5 text-xs font-semibold rounded-full border whitespace-nowrap transition-all flex items-center justify-center flex-shrink-0 ${
+                isActive ? 'shadow-sm' : 'hover:border-neutral-400 hover:text-[var(--text)]'
+              }`}
             >
               {f.label}
             </button>

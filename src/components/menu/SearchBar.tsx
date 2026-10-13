@@ -36,10 +36,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             backgroundColor: 'var(--surface)',
             borderColor: 'var(--border)',
             color: 'var(--text)',
-            borderRadius: 'var(--radius)',
             boxShadow: 'var(--shadow-sm)',
           }}
-          className="w-full h-11 border pl-10 pr-12 text-sm placeholder:opacity-60 focus:outline-none focus:border-[var(--primary)] transition-all"
+          className="w-full h-12 border pl-11 pr-12 text-sm rounded-full placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all"
         />
 
         {/* Tombol Hapus Input (Area sentuh 44px) */}

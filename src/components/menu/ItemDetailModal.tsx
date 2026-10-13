@@ -27,12 +27,10 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   onAddToCart,
   isViewOnly = false,
 }) => {
-  if (!isOpen || !item) return null;
-
   // State untuk varian default
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
-    if (item.variants) {
+    if (item?.variants) {
       item.variants.forEach((v) => {
         if (v.options.length > 0) {
           initial[v.name] = v.options[0].name;
@@ -45,6 +43,8 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
+
+  if (!isOpen || !item) return null;
 
   // Hitung unitPrice dengan penambahan harga varian & addons
   let unitPrice = item.price;
@@ -105,13 +105,13 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
           backgroundColor: 'var(--surface)',
           color: 'var(--text)',
         }}
-        className="w-full md:max-w-[640px] rounded-t-[20px] md:rounded-[12px] max-h-[90vh] md:max-h-[85vh] flex flex-col shadow-2xl overflow-hidden transition-transform"
+        className="w-full md:max-w-[640px] rounded-t-[28px] md:rounded-2xl max-h-[90vh] md:max-h-[85vh] flex flex-col shadow-2xl overflow-hidden transition-transform"
       >
         {/* Handle bar bottom-sheet mobile */}
         <div className="w-full pt-3 pb-1 flex justify-center md:hidden">
           <div
             style={{ backgroundColor: 'var(--border)' }}
-            className="w-10 h-1 rounded-full"
+            className="w-12 h-1.5 rounded-full"
           />
         </div>
 
@@ -361,20 +361,18 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 </button>
               </div>
 
-              {/* Tombol Tambah ke Keranjang: solid --primary, tinggi 48px, radius 10px */}
+              {/* Tombol Tambah ke Keranjang */}
               <button
                 type="button"
                 onClick={handleSubmit}
                 style={{
                   backgroundColor: 'var(--primary)',
                   color: '#ffffff',
-                  borderRadius: '10px',
-                  height: '48px',
                 }}
-                className="flex-1 font-medium text-sm px-4 flex items-center justify-between transition-colors hover:bg-[var(--primary-hover)] active:scale-[0.99]"
+                className="flex-1 font-bold text-sm px-5 h-12 rounded-full flex items-center justify-between transition-all hover:opacity-90 active:scale-[0.98] shadow-sm"
               >
                 <span>Tambah ke Keranjang</span>
-                <span className="tabular-nums">{formatRupiah(totalPrice)}</span>
+                <span className="tabular-nums font-extrabold">{formatRupiah(totalPrice)}</span>
               </button>
             </>
           )}

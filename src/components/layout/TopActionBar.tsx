@@ -88,19 +88,17 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
               style={{
                 borderColor: 'var(--border)',
                 backgroundColor: 'var(--bg)',
-                borderRadius: '6px',
               }}
-              className="flex items-center p-0.5 border"
+              className="flex items-center p-0.5 border rounded-full"
             >
               <button
                 type="button"
                 onClick={() => onToggleLang('id')}
                 style={{
-                  borderRadius: '4px',
                   backgroundColor: currentLang === 'id' ? 'var(--primary)' : 'transparent',
                   color: currentLang === 'id' ? '#ffffff' : 'var(--text-muted)',
                 }}
-                className="px-2 py-0.5 text-[11px] font-medium transition-colors"
+                className="px-2.5 py-0.5 text-[11px] font-bold rounded-full transition-colors"
               >
                 ID
               </button>
@@ -108,11 +106,10 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
                 type="button"
                 onClick={() => onToggleLang('en')}
                 style={{
-                  borderRadius: '4px',
                   backgroundColor: currentLang === 'en' ? 'var(--primary)' : 'transparent',
                   color: currentLang === 'en' ? '#ffffff' : 'var(--text-muted)',
                 }}
-                className="px-2 py-0.5 text-[11px] font-medium transition-colors"
+                className="px-2.5 py-0.5 text-[11px] font-bold rounded-full transition-colors"
               >
                 EN
               </button>
@@ -130,14 +127,13 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
               onClick={handleShare}
               aria-label={t('shareMenu')}
               style={{
-                borderRadius: '6px',
                 borderColor: 'var(--border)',
                 backgroundColor: 'var(--bg)',
                 color: 'var(--text)',
               }}
-              className="px-2.5 py-1.5 border flex items-center gap-1.5 text-xs font-medium hover:border-[var(--primary)] transition-colors"
+              className="px-3 py-1 border rounded-full flex items-center gap-1.5 text-xs font-semibold hover:border-[var(--primary)] transition-colors"
             >
-              <Share2 className="w-3 h-3 stroke-[1.5]" style={{ color: 'var(--primary)' }} />
+              <Share2 className="w-3.5 h-3.5 stroke-[2]" style={{ color: 'var(--primary)' }} />
               <span className="hidden sm:inline">{t('shareMenu')}</span>
             </button>
           )}
@@ -148,14 +144,13 @@ export const TopActionBar: React.FC<TopActionBarProps> = ({
               onClick={handleContactWhatsApp}
               aria-label={t('contactWA')}
               style={{
-                borderRadius: '6px',
                 borderColor: 'var(--border)',
                 backgroundColor: 'var(--bg)',
                 color: 'var(--text)',
               }}
-              className="px-2.5 py-1.5 border flex items-center gap-1.5 text-xs font-medium hover:border-[var(--primary)] transition-colors"
+              className="px-3 py-1 border rounded-full flex items-center gap-1.5 text-xs font-semibold hover:border-[var(--primary)] transition-colors"
             >
-              <MessageCircle className="w-3 h-3 stroke-[1.5]" style={{ color: 'var(--color-whatsapp)' }} />
+              <MessageCircle className="w-3.5 h-3.5 stroke-[2]" style={{ color: 'var(--color-whatsapp)' }} />
               <span>{t('contactWA')}</span>
             </button>
           )}

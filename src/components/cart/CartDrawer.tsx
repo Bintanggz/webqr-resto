@@ -719,20 +719,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </p>
             </div>
 
-            {/* Tombol Pesan via WhatsApp: solid --primary, tinggi 48px, radius 10px */}
+            {/* Tombol Pesan via WhatsApp */}
             <button
               type="button"
               onClick={handleCheckoutWhatsApp}
               style={{
-                backgroundColor: 'var(--primary)',
+                backgroundColor: 'var(--color-whatsapp)',
                 color: '#ffffff',
-                borderRadius: '10px',
-                height: '48px',
               }}
-              className="w-full font-medium text-sm px-4 flex items-center justify-center gap-2 transition-colors hover:bg-[var(--primary-hover)] active:scale-[0.99]"
+              className="w-full font-bold text-sm px-4 h-12 rounded-full flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.99] shadow-md"
             >
-              <Send className="w-4 h-4 stroke-[1.5]" />
-              <span>Pesan via WhatsApp</span>
+              <Send className="w-4 h-4 stroke-[2]" />
+              <span>Kirim Pesanan via WhatsApp</span>
             </button>
 
             <p

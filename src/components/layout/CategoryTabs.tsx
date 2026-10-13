@@ -35,11 +35,11 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
         backgroundColor: 'var(--surface)',
         borderColor: 'var(--border)',
       }}
-      className="sticky top-0 z-30 border-b backdrop-blur-md transition-colors"
+      className="sticky top-0 z-30 border-b backdrop-blur-md transition-colors shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
     >
       <div
         ref={containerRef}
-        className="app-container flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-0"
+        className="app-container flex items-center gap-2 overflow-x-auto no-scrollbar py-2.5"
       >
         {/* Tab 'Semua' */}
         <button
@@ -47,28 +47,29 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
           ref={activeCategoryId === 'all' ? activeTabRef : null}
           onClick={() => onSelectCategory('all')}
           style={{
-            color: activeCategoryId === 'all' ? 'var(--primary)' : 'var(--text-muted)',
-            borderBottom: activeCategoryId === 'all' ? '2px solid var(--primary)' : '2px solid transparent',
+            backgroundColor: activeCategoryId === 'all' ? 'var(--primary)' : 'transparent',
+            borderColor: activeCategoryId === 'all' ? 'var(--primary)' : 'var(--border)',
+            color: activeCategoryId === 'all' ? '#ffffff' : 'var(--text-muted)',
           }}
-          className={`min-h-[44px] px-3 sm:px-4 py-2.5 text-sm sm:text-base font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 focus:outline-none ${
-            activeCategoryId === 'all' ? 'font-semibold' : 'hover:text-[var(--text)]'
+          className={`min-h-[38px] px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full border whitespace-nowrap transition-all flex items-center gap-1.5 focus:outline-none flex-shrink-0 ${
+            activeCategoryId === 'all' ? 'shadow-sm scale-[1.02]' : 'hover:border-neutral-400 hover:text-[var(--text)] bg-neutral-50 dark:bg-neutral-800/60'
           }`}
         >
           <span>Semua Menu</span>
           {totalAllItems ? (
             <span
               style={{
-                backgroundColor: activeCategoryId === 'all' ? 'var(--primary-light)' : 'transparent',
-                color: activeCategoryId === 'all' ? 'var(--primary)' : 'var(--text-muted)',
+                backgroundColor: activeCategoryId === 'all' ? 'rgba(255, 255, 255, 0.25)' : 'var(--border)',
+                color: activeCategoryId === 'all' ? '#ffffff' : 'var(--text-muted)',
               }}
-              className="text-xs px-1.5 py-0.5 rounded-full font-normal"
+              className="text-[11px] px-1.5 py-0.2 rounded-full font-bold ml-0.5"
             >
               {totalAllItems}
             </span>
           ) : null}
         </button>
 
-        {/* Tab Kategori - Tanpa Emoji, Teks Bersih dengan Underline */}
+        {/* Tab Kategori - Modern Rounded Pill Chips */}
         {categories.map((cat) => {
           const isActive = activeCategoryId === cat.id;
           return (
@@ -78,11 +79,12 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
               ref={isActive ? activeTabRef : null}
               onClick={() => onSelectCategory(cat.id)}
               style={{
-                color: isActive ? 'var(--primary)' : 'var(--text-muted)',
-                borderBottom: isActive ? '2px solid var(--primary)' : '2px solid transparent',
+                backgroundColor: isActive ? 'var(--primary)' : 'transparent',
+                borderColor: isActive ? 'var(--primary)' : 'var(--border)',
+                color: isActive ? '#ffffff' : 'var(--text-muted)',
               }}
-              className={`min-h-[44px] px-3 sm:px-4 py-2.5 text-sm sm:text-base font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 focus:outline-none ${
-                isActive ? 'font-semibold' : 'hover:text-[var(--text)]'
+              className={`min-h-[38px] px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full border whitespace-nowrap transition-all flex items-center gap-1.5 focus:outline-none flex-shrink-0 ${
+                isActive ? 'shadow-sm scale-[1.02]' : 'hover:border-neutral-400 hover:text-[var(--text)] bg-neutral-50 dark:bg-neutral-800/60'
               }`}
             >
               <span>{cat.name}</span>

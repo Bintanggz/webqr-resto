@@ -61,10 +61,9 @@ export const PromoCarousel: React.FC<PromoCarouselProps> = ({ promos }) => {
         )}
       </div>
 
-      {/* Grid Responsif: 1 slide di Mobile, 2 di Tablet (md), 3 di Desktop (lg) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Grid Responsif Promo Banners */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {activePromos.map((promo, idx) => {
-          // Hanya tampilkan slide yang relevan di mobile jika promo banyak
           const isCurrentMobile = idx === startIndex;
           return (
             <article
@@ -75,31 +74,54 @@ export const PromoCarousel: React.FC<PromoCarouselProps> = ({ promos }) => {
                 borderRadius: 'var(--radius)',
                 boxShadow: 'var(--shadow-sm)',
               }}
-              className={`border p-4 transition-all flex flex-col justify-between ${
+              className={`border overflow-hidden transition-all flex flex-row items-center justify-between ${
                 isCurrentMobile ? 'flex' : 'hidden md:flex'
               }`}
             >
-              <div>
-                <h3
-                  style={{ color: 'var(--text)' }}
-                  className="text-[16px] font-semibold leading-snug line-clamp-1"
-                >
-                  {promo.title}
-                </h3>
-                <p
-                  style={{ color: 'var(--text-muted)' }}
-                  className="text-[14px] leading-[1.6] line-clamp-2 mt-1.5"
-                >
-                  {promo.description}
-                </p>
+              {/* Info Promo */}
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between min-w-0">
+                <div>
+                  <span
+                    style={{
+                      backgroundColor: 'var(--primary-light)',
+                      color: 'var(--primary)',
+                    }}
+                    className="text-[11px] font-bold px-2 py-0.5 rounded-full inline-block mb-1.5 uppercase tracking-wide"
+                  >
+                    Promo Spesial
+                  </span>
+                  <h3
+                    style={{ color: 'var(--text)' }}
+                    className="text-[15px] sm:text-[16px] font-bold leading-snug line-clamp-1"
+                  >
+                    {promo.title}
+                  </h3>
+                  <p
+                    style={{ color: 'var(--text-muted)' }}
+                    className="text-xs sm:text-[13px] leading-[1.5] line-clamp-2 mt-1"
+                  >
+                    {promo.description}
+                  </p>
+                </div>
+
+                <div className="mt-3 flex items-center gap-2 text-xs font-semibold" style={{ color: 'var(--primary)' }}>
+                  <span>Klaim saat order</span>
+                  <span>→</span>
+                </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t flex items-center justify-between text-xs font-medium" style={{ borderColor: 'var(--border)', color: 'var(--primary)' }}>
-                <span>Berlaku Terbatas</span>
-                <span className="text-[11px] px-2 py-0.5 rounded-[4px]" style={{ backgroundColor: 'var(--primary-light)' }}>
-                  Klaim Saat Order
-                </span>
-              </div>
+              {/* Foto Promo */}
+              {promo.image && (
+                <div className="w-28 h-28 sm:w-36 sm:h-36 flex-shrink-0 relative overflow-hidden bg-neutral-100">
+                  <img
+                    src={promo.image}
+                    alt={promo.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[var(--surface)] to-transparent w-6" />
+                </div>
+              )}
             </article>
           );
         })}
